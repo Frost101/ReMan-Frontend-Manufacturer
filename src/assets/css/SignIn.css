@@ -1,0 +1,25 @@
+.page-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:  #3948abcb; 
+  }
+  
+  .center-box {
+    width: 50%; /* Adjust the width of the box as needed */
+    height: 50%; /* Adjust the height of the box as needed */
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .left-section {
+    flex: 1;
+    background-color: #3949AB; /* Left section color */
+  }
+  
+  .right-section {
+    flex: 1;
+    background-color: #fafefd; /* Right section color */
+  }
+  
