@@ -66,7 +66,7 @@ const aboutItemsRetailer = [
 function LandingAbout(){
     return(
         <>
-        <div className="block aboutBlock" style={{backgroundColor:'#ade8f4'}}>
+        <div className="block aboutBlock" style={{backgroundColor:'#ade8f4'}} id='about'>
             <div className="container-fluid" >
 
                 <div >
@@ -87,7 +87,7 @@ function LandingAbout(){
             </div>
         </div>  
 
-        <div className="block aboutBlock">
+        <div className="block aboutBlock" id='benefits'>
             <div className='container-fluid'>
                 <div style={{ padding: '20px' }}>
                         <h2 style={{fontFamily:'Kalam', fontSize:"40px",textAlign: 'center'}}>How Manufacturers are benefitted</h2>

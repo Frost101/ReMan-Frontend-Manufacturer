@@ -5,6 +5,8 @@ const { Header, Content, Footer } = Layout;
 import AppHeader from '../components/AppHeader';
 import LandingHero from '../components/LandingHero';
 import LandingAbout from '../components/LandingAbout';
+import JoinNow from '../components/JoinNow';
+import CustomFooter from '../components/CustomFooter';
 
 
 
@@ -24,43 +26,16 @@ const Landing_page = () => {
         <Content>
             <LandingHero />
         </Content>
-        <Content>
+        <Content >
             <LandingAbout />
+        </Content>
+        <Content >
+            <JoinNow />
         </Content>
 
 
-      <Content
-        style={{
-          padding: '0 48px',
-        }}
-      >
-        <Breadcrumb
-          style={{
-            margin: '16px 0',
-          }}
-        >
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
-        <div
-          style={{
-            background: colorBgContainer,
-            minHeight: 280,
-            padding: 24,
-            borderRadius: borderRadiusLG,
-          }}
-        >
-          Content
-        </div>
-      </Content>
-      <Footer
-        style={{
-          textAlign: 'center',
-        }}
-      >
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+
+      <CustomFooter/>
     </Layout>
   );
 };
