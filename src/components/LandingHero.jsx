@@ -34,7 +34,7 @@ function LandingHero(){
                                         <h1 style={{fontFamily:'Kalam', fontSize:'40px'}}>{item.title}</h1>
                                         <p style={{fontFamily:'Kalam'}}>{item.content}</p>
                                         <div className="btnHolder">
-                                            <Button type="primary" style={{fontFamily:'Kalam'}} size="large">Learn More</Button>
+                                            <Button type="primary" style={{fontFamily:'Kalam'}} size="large"><a href='#join'>Join Today</a></Button>
                                             <Button size="large" style={{fontFamily:'Kalam'}} ><i className="fas fa-desktop"></i> Watch a Demo</Button>
                                         </div>
                                     </div>

@@ -18,11 +18,11 @@ function AppHeader() {
             defaultSelectedKeys={['Home']}
             disabledOverflow={true}
             >
-                <Menu.Item key="Home" ><p style={{fontFamily:'Kalam'}}>Home</p></Menu.Item>
+                <Menu.Item key="Home" ><p style={{fontFamily:'Kalam'}}><a href='/'>Home</a></p></Menu.Item>
                 <Menu.Item key="About"><p style={{fontFamily:'Kalam'}}><a href='#about'>About</a></p></Menu.Item>
                 <Menu.Item key="Benefits"> <p style={{fontFamily:'Kalam'}}><a href='#benefits'>Benefits</a></p> </Menu.Item>
                 <Menu.Item key="Join"> <p style={{fontFamily:'Kalam'}}><a href='#join'>Join Us</a></p> </Menu.Item>
-                <Menu.Item key="SignIn"> <p style={{fontFamily:'Kalam'}}><a href='#signin'>Sign In</a></p> </Menu.Item>
+                <Menu.Item key="SignIn"> <p style={{fontFamily:'Kalam'}}><a href='/signin'>Sign In</a></p> </Menu.Item>
                 <Menu.Item key="Contact"> <p style={{fontFamily:'Kalam'}}><a href='#contact'>Contact</a></p> </Menu.Item>
 
             </Menu>
