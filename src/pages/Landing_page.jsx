@@ -16,28 +16,24 @@ import { useState, useEffect } from 'react';
 
 const Landing_page = () => {
 
-  const [data, setData] = useState([]);
-
   useEffect(() => {
-    // Code inside this block will run after the component is mounted
-    // It can also run after each render if dependencies are specified
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://reman.us.to/api/products/onSale');
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
 
-    // Example: Fetching data from an API
-    (async () => {
-      let response = await fetch('https://reman.us.to/api/products/onSale');
-      let data = await response.json();
-      setData(data);
-    })();
-
-    
-    console.log(data);
-    console.log("bal");
-    // Cleanup function (optional)
-    return () => {
-      // Code inside this block will run when the component is unmounted
-      // It's used to clean up resources like subscriptions, timers, etc.
+        const data = await response.json();
+        console.log('Data:', data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
-  }, []); //
+
+    fetchData();
+  }, []); 
 
   const {
     token: { colorBgContainer, borderRadiusLG },
