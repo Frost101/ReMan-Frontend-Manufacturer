@@ -1,0 +1,20 @@
+.sidebar{
+    color: #fff;
+}
+
+/* YourMenuStyles.css */
+.menu-item:hover {
+    background-color: #1890ff;
+    color: #fff;
+  }
+
+.menu-bar{
+    height: 100vh;
+    margin-top:2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 1 rem;
+    position: relative;
+}
+  
