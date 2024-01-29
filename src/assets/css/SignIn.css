@@ -14,15 +14,23 @@
   }
   
   .left-section {
+    /* flex: 1;
+    background-color: #3949AB; */
     flex: 1;
-    background-color: #3949AB; /* Left section color */
+    background: url("../images/startup.svg") center/cover no-repeat; 
+    background-size: 80% 80%;
+    background-color: #3949AB;
   }
   
   .right-section {
     flex: 1;
     background-color: #fafefd; /* Right section color */
   }
+
+  .image-div{
+    background: url('../images/bg-works.jpg') center/cover no-repeat;
+  }
   
 
-  
+
 

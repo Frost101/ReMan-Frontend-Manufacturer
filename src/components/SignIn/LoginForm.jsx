@@ -1,20 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import 'antd/dist/reset.css';
 import LogoAndName from '../LogoAndName';
 import {MailOutlined, LockOutlined } from '@ant-design/icons';
+import { Alert, Space } from 'antd';
 
 const LoginForm = () => {
-  const onFinish = (values) => {
+
+    const [showError, setShowError] = useState(false);
+  const onFinish = async (values) => {
+
     console.log('Received values:', values);
-    setTimeout(() => {
-        alert('Login Successful!');
+
+    let response;
+    let data = {
+        email: values.email,
+        password: values.password
     }
-    , 1000);
+    try{
+        response = await fetch('https://reman.us.to/api/authentication/manufacturer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        });
+    }
+    catch(error){
+
+    }
+
+    if(response.status === 200){
+        setShowError(false);
+        window.location.href = '/man/home';
+    }
+    else{
+        console.log('Invalid Credentials');
+        setShowError(true);
+
+    }
     // window.location.href = '/';
   };
 
   return (
+    <>
+    <Space direction="vertical" style={{ width: '100%', marginBottom: showError ? '16px' : '0' }}>
+        {showError && (
+            <Alert type="error" message="Invalid Credentials" banner closable />
+        )}
+    </Space>
     <div style={{alignItems:'flex-end', display:'flex', justifyContent: 'center', padding:'10%'}}>
         
         <Form
@@ -71,6 +105,7 @@ const LoginForm = () => {
         </Form.Item>
         </Form>
     </div>
+    </>
   );
 };
 

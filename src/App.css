@@ -180,10 +180,11 @@ header
 
 .header .ant-menu li.ant-menu-item-selected,
 .header .ant-menu li.ant-menu-item:hover {
-  color: #1890ff;
+  color: #1890ff !important;
   background: none;
 }
 
+/* #1890ff */
 .header .ant-menu li.ant-menu-item-selected:before,
 .header .ant-menu li.ant-menu-item:hover:before {
   left: 5%;
@@ -468,6 +469,8 @@ responsive
     display: none;
   }
 }
+
+
 
 
 
