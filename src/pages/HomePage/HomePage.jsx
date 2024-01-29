@@ -1,7 +1,7 @@
-import { Layout, Button, theme } from "antd";
-const {Header, Sider} = Layout;
-import { CodeSandboxCircleFilled, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { useState} from "react";
+import { Layout, Button, theme, Breadcrumb } from "antd";
+const {Header,Content, Sider} = Layout;
+import { CodeSandboxCircleFilled, MenuFoldOutlined, MenuUnfoldOutlined, HomeOutlined } from "@ant-design/icons";
+import { useState, useEffect} from "react";
 import LogoAndName from "../../components/LogoAndName";
 import MenuList from "../../components/HomePage/MenuList";
 
@@ -9,10 +9,41 @@ import MenuList from "../../components/HomePage/MenuList";
 
 function HomePage(){
     const [collapsed, setCollapsed] = useState(false);
+    const [manInfo, setManInfo] = useState({manInfo:[]});
     const {
-        token: { colorBgContainer},
+        token: { colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const [marginLeft, setMarginLeft] = useState(200);
+
+
+    let response,receivedData;
+    useEffect(() => {
+        const fetchData = async () => {
+            let data = {
+                manufacturerId: localStorage.getItem('manufacturerId')
+            }
+            try{
+                response = await fetch('https://reman.us.to/api/manufacturer/info', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+                });
+        
+                receivedData = await response.json();
+                setManInfo(receivedData);
+            }
+            catch(error){
+        
+            }
+        };
+    
+        fetchData();
+      }, []); 
+
+
+
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
@@ -53,7 +84,45 @@ function HomePage(){
                         icon = {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                     />
                     </Header>
+
+
+                    {/* Adding Now */}
+                <Layout
+                style={{
+                    padding: '0 24px 24px',
+                }}
+                >
+                <Breadcrumb
+                    style={{
+                    margin: '65px 0 0 0',
+                    display: 'flex',
+                    justifyContent: 'left',
+                    }}
+                >
+                    <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
+                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
+                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Home</p></Breadcrumb.Item>
+                </Breadcrumb>
+
+
+                
+                <Content
+                    style={{
+                    padding: 24,
+                    margin: 0,
+                    minHeight: 280,
+                    background: colorBgContainer,
+                    borderRadius: borderRadiusLG,
+                    }}
+                >
+                    <p style={{fontFamily:'Lobster', fontSize: '60px', color:'blue'}}>{manInfo.Name}</p>
+                </Content>
                 </Layout>
+
+                {/* Added now */}
+                </Layout>
+
+                
             </Layout>
             
         </div>

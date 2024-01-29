@@ -17,7 +17,7 @@ function JoinNow(){
                             cover={<img alt="example" src={ShopImage} />}
                         >
                             <Meta title={<Title style={{fontFamily:'Kalam'}}level={2}>Step into a retail revolution! </Title>} />
-                            <Button type="primary" style={{marginTop:'20px', size:'50%'}}><h3 style={{fontFamily:'Kalam'}}>Join As Retailer</h3></Button>
+                            <Button type="primary" style={{marginTop:'20px', size:'50%'}}><h3 style={{fontFamily:'Kalam'}}><a href="https://reman-retailer.vercel.app/reg" style={{color:'#fff'}}>Join As Retailer</a></h3></Button>
 
                         </Card> 
                     </Col>

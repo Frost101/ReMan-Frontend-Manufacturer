@@ -4,15 +4,17 @@ import 'antd/dist/reset.css';
 import LogoAndName from '../LogoAndName';
 import {MailOutlined, LockOutlined } from '@ant-design/icons';
 import { Alert, Space } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
 
     const [showError, setShowError] = useState(false);
+    const navigate = useNavigate();
   const onFinish = async (values) => {
 
     console.log('Received values:', values);
 
-    let response;
+    let response,receivedData;
     let data = {
         email: values.email,
         password: values.password
@@ -25,6 +27,8 @@ const LoginForm = () => {
         },
         body: JSON.stringify(data)
         });
+
+        receivedData = await response.json();
     }
     catch(error){
 
@@ -32,7 +36,10 @@ const LoginForm = () => {
 
     if(response.status === 200){
         setShowError(false);
-        window.location.href = '/man/home';
+        console.log(receivedData.manufacturerId);
+        localStorage.setItem('manufacturerId', receivedData.manufacturerId);
+        navigate('/man/home');
+        // window.location.href = '/man/home';
     }
     else{
         console.log('Invalid Credentials');

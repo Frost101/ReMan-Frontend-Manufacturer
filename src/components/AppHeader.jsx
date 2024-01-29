@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Menu } from 'antd';
-import {CodeSandboxCircleFilled} from '@ant-design/icons';
+import {CodeSandboxCircleFilled, RightOutlined} from '@ant-design/icons';
 const { SubMenu } = Menu;
 
 function AppHeader() {
@@ -23,15 +23,9 @@ function AppHeader() {
                 <Menu.Item key="About"><p style={{fontFamily:'Kalam'}}><a href='#about'>About</a></p></Menu.Item>
                 <Menu.Item key="Benefits"> <p style={{fontFamily:'Kalam'}}><a href='#benefits'>Benefits</a></p> </Menu.Item>
                 <Menu.Item key="Join"> <p style={{fontFamily:'Kalam'}}><a href='#join'>Join Us</a></p> </Menu.Item>
-                {/* <Menu.Item key="SignIn"> <p style={{fontFamily:'Kalam'}}><a href='/signin'>Sign In</a></p> </Menu.Item> */}
-
-                <Menu.Item>
-                <SubMenu mode="inline" disabledOverflow={true} key="signin" title="SignIn" style={{fontFamily:'Kalam', display:'flex', marginBottom:'17px'}}>
-                    <Menu.Item key="retailer"><p style={{fontFamily:'Kalam'}}><a href='/signin'>Retailer</a></p></Menu.Item>
-                    <Menu.Item key="manufacturer"><p style={{fontFamily:'Kalam'}}><a href='/signin'>Manufacturer</a></p></Menu.Item>
-                </SubMenu>
-                </Menu.Item>
-                
+                <Menu.Item key="signin" disabled={true}> <p style={{fontFamily:'Kalam'}}>Sign In<RightOutlined /></p> </Menu.Item>
+                <Menu.Item key="retailer"><p style={{fontFamily:'Kalam'}}><a href='https://reman-retailer.vercel.app/login'>Retailer </a></p></Menu.Item>
+                <Menu.Item key="manufacturer"><p style={{fontFamily:'Kalam'}}><a href='/signin'>Manufacturer </a></p></Menu.Item>                
                 <Menu.Item key="Contact"> <p style={{fontFamily:'Kalam'}}><a href='#contact'>Contact</a></p> </Menu.Item>
 
             </Menu>
