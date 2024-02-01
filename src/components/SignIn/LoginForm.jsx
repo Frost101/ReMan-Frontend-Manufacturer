@@ -37,9 +37,8 @@ const LoginForm = () => {
     if(response.status === 200){
         setShowError(false);
         console.log(receivedData.manufacturerId);
-        localStorage.setItem('manufacturerId', receivedData.manufacturerId);
-        navigate('/man/home');
-        // window.location.href = '/man/home';
+        // localStorage.setItem('manufacturerId', receivedData.manufacturerId);
+        navigate('/man/home', {state:{manufacturerId: receivedData.manufacturerId}});
     }
     else{
         console.log('Invalid Credentials');

@@ -1,11 +1,11 @@
-import {Layout} from 'antd';
+import {Layout, ConfigProvider} from 'antd';
 const {Footer} = Layout;
 import {CodeSandboxCircleFilled, FacebookOutlined, TwitterOutlined, LinkedinOutlined, InstagramOutlined, MailOutlined, WhatsAppOutlined} from '@ant-design/icons';
 
 function CustomFooter(){
     return (
         <div id = 'contact'>
-                <Footer
+            <Footer
             style={{
             textAlign: 'center',
             }}

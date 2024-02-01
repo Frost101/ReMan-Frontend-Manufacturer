@@ -1,9 +1,11 @@
 import { Layout, Button, theme, Breadcrumb } from "antd";
 const {Header,Content, Sider} = Layout;
-import { CodeSandboxCircleFilled, MenuFoldOutlined, MenuUnfoldOutlined, HomeOutlined } from "@ant-design/icons";
+import { CodeSandboxCircleFilled,HomeOutlined } from "@ant-design/icons";
 import { useState, useEffect} from "react";
-import LogoAndName from "../../components/LogoAndName";
-import MenuList from "../../components/HomePage/MenuList";
+import MenuList from "../../components/common/MenuList"
+import MenuCollapse from "../../components/common/MenuCollapse";
+import CustomFooter from "../../components/CustomFooter";
+import {useLocation} from 'react-router-dom';
 
 
 
@@ -14,13 +16,15 @@ function HomePage(){
         token: { colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const [marginLeft, setMarginLeft] = useState(200);
+    const location = useLocation();
+    const manufacturerId = location.state.manufacturerId;
 
 
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
             let data = {
-                manufacturerId: localStorage.getItem('manufacturerId')
+                manufacturerId: manufacturerId
             }
             try{
                 response = await fetch('https://reman.us.to/api/manufacturer/info', {
@@ -43,13 +47,15 @@ function HomePage(){
       }, []); 
 
 
+    
 
 
-    const toggleCollapsed = () => {
-        setCollapsed(!collapsed);
-        if(marginLeft === 200){
+    const handleMenuCollapse = (collapsed) => {
+        setCollapsed(collapsed);
+        if(collapsed){
             setMarginLeft(80);
-        }else{
+        }
+        else{
             setMarginLeft(200);
         }
     };
@@ -61,7 +67,8 @@ function HomePage(){
                 collapsed={collapsed}
                 collapsible
                 trigger={null} 
-                className="sidebar">
+                className="sidebar"
+                style={{position:'fixed'}}>
                 <div className="logo" style={{ textAlign: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                         <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', marginTop:'10px', display:'flex', alignItems:'center', justifyContent:'center' }} />
@@ -71,58 +78,47 @@ function HomePage(){
                 </div>
                 </div>
                 
-                <MenuList />
+                <MenuList  value={{manufacturerId:manufacturerId,
+                                    manufacturerName: manInfo.Name,
+                                    manufacturerLogo: "logo.jpg"}}/>
                 </Sider>
-                <Layout>
-                    <Header style={{marginLeft, padding:0, background: 
-                colorBgContainer}}>
-                    
-                    <Button  
-                        type="text"
-                        className="toggle"
-                        onClick={toggleCollapsed}
-                        icon = {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                    />
-                    </Header>
-
-
-                    {/* Adding Now */}
-                <Layout
-                style={{
-                    padding: '0 24px 24px',
-                }}
-                >
-                <Breadcrumb
+                <Layout style={{marginLeft, minHeight:'100vh'}}>
+                    <MenuCollapse  sendDataToParent={handleMenuCollapse}/>
+                    <Layout
                     style={{
-                    margin: '65px 0 0 0',
-                    display: 'flex',
-                    justifyContent: 'left',
+                        padding: '0 24px 24px',
                     }}
-                >
-                    <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
-                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Home</p></Breadcrumb.Item>
-                </Breadcrumb>
+                    >
+                        <Breadcrumb
+                            style={{
+                            margin: '65px 0 0 0',
+                            display: 'flex',
+                            justifyContent: 'left',
+                            }}
+                        >
+                            <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
+                            <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
+                            <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Home</p></Breadcrumb.Item>
+                        </Breadcrumb>
 
 
                 
-                <Content
-                    style={{
-                    padding: 24,
-                    margin: 0,
-                    minHeight: 280,
-                    background: colorBgContainer,
-                    borderRadius: borderRadiusLG,
-                    }}
-                >
-                    <p style={{fontFamily:'Lobster', fontSize: '60px', color:'blue'}}>{manInfo.Name}</p>
-                </Content>
+                        <Content
+                            style={{
+                            padding: 24,
+                            margin: 0,
+                            minHeight: 280,
+                            background: colorBgContainer,
+                            borderRadius: borderRadiusLG,
+                            }}
+                        >
+                            <p style={{fontFamily:'Lobster', fontSize: '60px', color:'blue'}}>{manInfo.Name}</p>
+                        </Content>
+                     </Layout>
                 </Layout>
-
-                {/* Added now */}
-                </Layout>
-
-                
+            </Layout>
+            <Layout>
+                <CustomFooter />
             </Layout>
             
         </div>

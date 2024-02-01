@@ -1,4 +1,4 @@
-import {Menu} from 'antd';
+import {Menu, Select} from 'antd';
 import {HomeOutlined,
         ProfileOutlined,
         HistoryOutlined,
@@ -9,12 +9,30 @@ import {HomeOutlined,
         PoweroffOutlined
 } from '@ant-design/icons';
 
+import {useNavigate} from 'react-router-dom';
+
 import '../../assets/css/Sidebar.css';
 
-const MenuList = () => {
+const MenuList = (props) => {
+
+    const navigate = useNavigate();
+
+
+    //* Navigation
+    const goToInventoryPage = () => {
+        navigate("/man/inventoryList", {state:{manufacturerId: props.value.manufacturerId
+                                                ,manufacturerName: props.value.manufacturerName
+                                                ,manufacturerLogo: props.value.manufacturerLogo}});
+    }
+    const goToHomePage = () => {
+        navigate("/man/home", {state:{manufacturerId: props.value.manufacturerId
+                                                ,manufacturerName: props.value.manufacturerName
+                                                ,manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
     return (
-        <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'}}>
-            <Menu.Item key="home" icon={<HomeOutlined />} className="menu-item">
+        <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'} }>
+            <Menu.Item key="home" icon={<HomeOutlined />} onClick={goToHomePage} className="menu-item">
                 Home
             </Menu.Item>
             <Menu.Item key="Profile" icon={<ProfileOutlined />} className="menu-item">
@@ -23,7 +41,7 @@ const MenuList = () => {
             <Menu.Item key="history" icon={<HistoryOutlined />} className="menu-item">
                 Order History
             </Menu.Item>
-            <Menu.Item key="inventory" icon={<ShoppingCartOutlined />} className="menu-item">
+            <Menu.Item key="inventory" icon={<ShoppingCartOutlined />} onClick={goToInventoryPage} className="menu-item">
                 Inventory
             </Menu.Item>
             <Menu.Item key="production" icon={<ShopOutlined />} className="menu-item">
