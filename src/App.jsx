@@ -7,7 +7,8 @@ import Landing_page from './pages/Landing_page'
 import SignIn from './pages/SignIn/SignIn'
 import HomePage from './pages/HomePage/HomePage'
 import InventoryList from './pages/InventoryList/inventoryList'
-
+import ProductionHouseList from './pages/ProductionHouseList/ProductionHouseList'
+import ProductList from './pages/ProductList/ProductList'
 
 
 function App() {
@@ -21,8 +22,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing_page />} />
             <Route path="/signin" element={<SignIn />} />
+            
             <Route path="/man/home" element={<HomePage />} />
             <Route path="man/inventoryList" element={<InventoryList />} />
+            <Route path="man/productionHouseList" element={<ProductionHouseList />} />
+            <Route path="man/productList" element={<ProductList />} />
           </Routes>
         </Router>
     </div>

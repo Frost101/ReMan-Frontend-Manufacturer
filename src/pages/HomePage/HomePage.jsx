@@ -105,7 +105,9 @@ function HomePage(){
                 
                         <Content
                             style={{
-                            padding: 24,
+                            paddingTop: 0,
+                            paddingLeft: 24,
+                            paddingRight: 24,
                             margin: 0,
                             minHeight: 280,
                             background: colorBgContainer,

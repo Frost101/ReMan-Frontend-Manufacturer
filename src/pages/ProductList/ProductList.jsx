@@ -1,15 +1,18 @@
-import { Layout, theme, Breadcrumb } from "antd";
+import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar } from "antd";
 import MenuList from "../../components/common/MenuList";
+import ProductCard from "../../components/common/ProductCard";
 const {Content, Sider} = Layout;
-import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
+const { Panel } = Collapse;
+import { useState, useEffect, } from "react";
+import { useNavigate } from "react-router-dom";
+import { CodeSandboxCircleFilled, HomeOutlined, CaretRightOutlined, PlusCircleFilled, MinusCircleFilled, CheckCircleFilled} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
-import InventoryCard from "../../components/common/InventoryCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
 
-function InventoryList(){
+function ProductList(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
@@ -33,9 +36,14 @@ function InventoryList(){
 
 
     //* Set inventory list
-    const [inventoryList, setInventoryList] = useState([]);
+    const [categoryList, setCategoryList] = useState([]);
+    const [productList, setProductList] = useState([]);
 
 
+    //* Add product, remove product, update product
+    const addProduct = () => {
+        navigate("/man/productList/addProduct");
+    }
 
     //* Fetch Inventory List
     let response,receivedData;
@@ -45,7 +53,7 @@ function InventoryList(){
                 manufacturerId: manufacturerId
             }
             try{
-                response = await fetch('https://reman.us.to/api/inventory/inventoryList', {
+                response = await fetch('https://reman.us.to/api/products/manufacturerCategories', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -54,16 +62,37 @@ function InventoryList(){
                 });
         
                 receivedData = await response.json();
-                setInventoryList(receivedData);
+                setCategoryList(receivedData);
+                console.log(receivedData);
             }
             catch(error){
-                console.log("Error");
+                console.log("Error while fetching categories");
+            }
+
+            
+            try{
+                response = await fetch('https://reman.us.to/api/products/byManufacturer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+                });
+        
+                receivedData = await response.json();
+                setProductList(receivedData);
+                console.log(receivedData);
+            }
+            catch(error){
+                console.log("Error while fetching products");
             }
         };
     
         fetchData();
       }, []); 
 
+      console.log(categoryList);
+      console.log(productList);
 
     return (
         <div>
@@ -115,7 +144,7 @@ function InventoryList(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Inventory List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Product List</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -145,14 +174,52 @@ function InventoryList(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Inventories:</p>
-                            
-                            {
-                                inventoryList.length !=0 && inventoryList.inventories.map((inventory, index) => {
-                                    return <InventoryCard key = {index} inventory={inventory}/>
-                                }
-                                )
-                            }
+                            <div style={{display:'flex', justifyContent:'center'}}>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Categories and Products:</p>
+                                <div style={{flex:'1', display:'flex', justifyContent:'center', justifySelf:'right'}}>
+                                    <div onClick={addProduct} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
+                                        <PlusCircleFilled style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Product</p>
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
+                                        <CheckCircleFilled style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Update Product Details</p>
+                                    </div>
+
+                                    <div  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
+                                        <MinusCircleFilled  style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px' }}>Remove Product</p>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+
+
+                             {/* <Card title="Collapsible Card"> */}
+                                <Collapse accordion expandIconPosition="left" expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                                    {
+                                        (categoryList != undefined && categoryList.length !=0) && categoryList.uniqueCategories.map((category, index) => {
+                                            return (<Panel header={
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <Avatar src="https://i.pinimg.com/474x/8e/bc/e5/8ebce5e43c230715aa6ca5d5bd9b8f21.jpg" size={50} style={{ marginRight: '10px' }} /> {/* Use Avatar component with the image */}
+                                                            <span style={{ fontFamily: 'Kalam', fontSize: '40px' }}>{category.CategoryName}</span>
+                                                        </div>
+                                                    } key={index}>
+                                                {
+                                                    ( productList != undefined && productList.length != 0) && productList.products.map((product, index) => {
+                                                        return (
+                                                                (product.CategoryName == category.CategoryName) && (<ProductCard key = {index} product={product} />) 
+
+                                                                );
+                                                    })
+                                                }
+                                            </Panel>);
+                                        }
+                                        )
+                                    }
+                                </Collapse>
+                            {/* </Card> */}
                             
                         </Content>
                     </Layout>
@@ -166,4 +233,4 @@ function InventoryList(){
     )
 }
 
-export default InventoryList;
+export default ProductList;

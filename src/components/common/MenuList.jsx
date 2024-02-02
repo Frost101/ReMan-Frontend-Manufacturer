@@ -6,7 +6,8 @@ import {HomeOutlined,
         NotificationOutlined,
         AreaChartOutlined,
         ShopOutlined,
-        PoweroffOutlined
+        PoweroffOutlined,
+        DropboxOutlined
 } from '@ant-design/icons';
 
 import {useNavigate} from 'react-router-dom';
@@ -29,6 +30,16 @@ const MenuList = (props) => {
                                                 ,manufacturerName: props.value.manufacturerName
                                                 ,manufacturerLogo: props.value.manufacturerLogo}});
     }
+    const goToProductionHousePage = () => {
+        navigate("/man/productionHouseList", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+    const goToProductListPage = () => {
+        navigate("/man/productList", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
 
     return (
         <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'} }>
@@ -44,8 +55,11 @@ const MenuList = (props) => {
             <Menu.Item key="inventory" icon={<ShoppingCartOutlined />} onClick={goToInventoryPage} className="menu-item">
                 Inventory
             </Menu.Item>
-            <Menu.Item key="production" icon={<ShopOutlined />} className="menu-item">
+            <Menu.Item key="production" icon={<ShopOutlined />} onClick={goToProductionHousePage} className="menu-item">
                 Production House
+            </Menu.Item>
+            <Menu.Item key="products" icon={<DropboxOutlined />} onClick={goToProductListPage} className="menu-item">
+                Products
             </Menu.Item>
             <Menu.Item key="notification" icon={<NotificationOutlined />} className="menu-item">
                 Notification

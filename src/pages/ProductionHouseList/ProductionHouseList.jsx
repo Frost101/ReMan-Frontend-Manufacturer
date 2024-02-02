@@ -4,11 +4,11 @@ const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
 import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
-import InventoryCard from "../../components/common/InventoryCard";
+import ProductionHouseCard from "../../components/common/ProductionHouseCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
 
-function InventoryList(){
+function ProductionHouseList(){
     const location = useLocation();
 
     const manufacturerId = location.state.manufacturerId;
@@ -33,7 +33,7 @@ function InventoryList(){
 
 
     //* Set inventory list
-    const [inventoryList, setInventoryList] = useState([]);
+    const [productionHouseList, setProductionHouseList] = useState([]);
 
 
 
@@ -45,7 +45,7 @@ function InventoryList(){
                 manufacturerId: manufacturerId
             }
             try{
-                response = await fetch('https://reman.us.to/api/inventory/inventoryList', {
+                response = await fetch('https://reman.us.to/api/productionhouse/productionHouseList', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ function InventoryList(){
                 });
         
                 receivedData = await response.json();
-                setInventoryList(receivedData);
+                setProductionHouseList(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -64,12 +64,10 @@ function InventoryList(){
         fetchData();
       }, []); 
 
-
+      
     return (
         <div>
             <Layout>
-
-               
                 <Sider 
                 collapsed={collapsed}
                 collapsible
@@ -115,7 +113,7 @@ function InventoryList(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Inventory List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -145,11 +143,11 @@ function InventoryList(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Inventories:</p>
+                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Production Houses :</p>
                             
                             {
-                                inventoryList.length !=0 && inventoryList.inventories.map((inventory, index) => {
-                                    return <InventoryCard key = {index} inventory={inventory}/>
+                                productionHouseList.length !=0 && productionHouseList.productionHouses.map((productionHouse, index) => {
+                                    return <ProductionHouseCard key = {index} productionHouse={productionHouse}/>
                                 }
                                 )
                             }
@@ -166,4 +164,4 @@ function InventoryList(){
     )
 }
 
-export default InventoryList;
+export default ProductionHouseList;

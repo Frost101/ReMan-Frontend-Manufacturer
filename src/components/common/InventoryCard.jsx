@@ -1,7 +1,7 @@
 
 import { BankOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { Avatar, Card, Empty, Skeleton, Switch} from 'antd';
+import { Card} from 'antd';
 const { Meta } = Card;
 
 
