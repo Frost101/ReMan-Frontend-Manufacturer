@@ -4,16 +4,19 @@ const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
 import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
-import InventoryCard from "../../components/common/InventoryCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
+import ProductsInInventoryCard from "../../components/Inventory/ProductsInInventoryCard";
 
-function InventoryList(){
+
+function InventoryShowProduct(){
     const location = useLocation();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
+    const iid = location.state.iid;
+    const inventoryName = location.state.inventoryName;
     
     //* Menu Collapse
     const [collapsed, setCollapsed] = useState(false);
@@ -33,7 +36,7 @@ function InventoryList(){
 
 
     //* Set inventory list
-    const [inventoryList, setInventoryList] = useState([]);
+    const [productList, setProductList] = useState([]);
 
 
 
@@ -42,10 +45,10 @@ function InventoryList(){
     useEffect(() => {
         const fetchData = async () => {
             let data = {
-                manufacturerId: manufacturerId
+                iid : iid
             }
             try{
-                response = await fetch('https://reman.us.to/api/inventory/inventoryList', {
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/byInventory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -54,7 +57,8 @@ function InventoryList(){
                 });
         
                 receivedData = await response.json();
-                setInventoryList(receivedData);
+                setProductList(receivedData);
+                console.log(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -64,7 +68,7 @@ function InventoryList(){
         fetchData();
       }, []); 
 
-
+    
     return (
         <div>
             <Layout>
@@ -115,7 +119,8 @@ function InventoryList(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Inventory List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Products</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -145,14 +150,26 @@ function InventoryList(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Inventories:</p>
-                            
+                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {inventoryName} :</p>
                             {
-                                inventoryList.length !=0 && inventoryList.inventories.map((inventory, index) => {
-                                    return <InventoryCard key = {index} inventory={inventory}/>
-                                }
-                                )
+                                (productList != undefined && productList.length != 0) && productList.productsInInventory.map((product, index) => {
+                                   
+                                       return(
+                                        <ProductsInInventoryCard key = {index} value={{
+                                            product: product,
+                                            manufacturerId : manufacturerId,
+                                            manufacturerName : manufacturerName,
+                                            manufacturerLogo : manufacturerLogo,
+                                            iid : iid,
+                                            inventoryName : inventoryName
+                                        }} />
+                                       );
+                                        // console.log(product.Product);
+                                    
+                                    
+                                })
                             }
+                            
                             
                         </Content>
                     </Layout>
@@ -166,4 +183,4 @@ function InventoryList(){
     )
 }
 
-export default InventoryList;
+export default InventoryShowProduct;

@@ -45,7 +45,7 @@ function ProductionHouseList(){
                 manufacturerId: manufacturerId
             }
             try{
-                response = await fetch('https://reman.us.to/api/productionhouse/productionHouseList', {
+                response = await fetch(import.meta.env.VITE_API_URL+'/productionhouse/productionHouseList', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

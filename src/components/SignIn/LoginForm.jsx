@@ -20,7 +20,7 @@ const LoginForm = () => {
         password: values.password
     }
     try{
-        response = await fetch('https://reman.us.to/api/authentication/manufacturer', {
+        response = await fetch(import.meta.env.VITE_API_URL+'/authentication/manufacturer', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -11,15 +11,19 @@ import CustomFooter from '../components/CustomFooter';
 
 
 
+
+
 import { useState, useEffect } from 'react';
 
 
 const Landing_page = () => {
 
+  console.log(import.meta.env.VITE_API_URL);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://reman.us.to/api/products/onSale');
+        const response = await fetch(import.meta.env.VITE_API_URL+'/products/onSale');
         
         if (!response.ok) {
           throw new Error('Network response was not ok');

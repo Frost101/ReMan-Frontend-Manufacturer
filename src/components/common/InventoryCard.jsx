@@ -2,16 +2,34 @@
 import { BankOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { Card} from 'antd';
+import { useNavigate } from 'react-router-dom';
 const { Meta } = Card;
 
-
 const InventoryCard = (props) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const onChange = (checked) => {
     setLoading(!checked);
   };
 
-  let inventory = props.inventory;
+
+  let inventory = props.value.inventory;
+  const manufacturerName = props.value.manufacturerName;
+  const manufacturerId = props.value.manufacturerId;
+  const manufacturerLogo = props.value.manufacturerLogo;
+
+
+  const goToInventoryPage = () => {
+    navigate('/man/inventoryList/showProduct', {state: {
+      manufacturerId: manufacturerId,
+      manufacturerName: manufacturerName,
+      manufacturerLogo: manufacturerLogo,
+      iid: inventory.iid,
+      inventoryName: inventory.InventoryName,
+    } });
+  }
+
+  
   return (
     <>
       
@@ -32,6 +50,7 @@ const InventoryCard = (props) => {
             e.currentTarget.style.backgroundColor = ''; // Revert to the original background color on hover out
             e.currentTarget.style.transform = 'scale(1,1)';
         }}
+        onClick={goToInventoryPage}
       >
         <Meta
           avatar={<BankOutlined style = {{color:'#08c', fontSize: '28px'}} />}

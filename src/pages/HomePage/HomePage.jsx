@@ -27,7 +27,7 @@ function HomePage(){
                 manufacturerId: manufacturerId
             }
             try{
-                response = await fetch('https://reman.us.to/api/manufacturer/info', {
+                response = await fetch(import.meta.env.VITE_API_URL+'/manufacturer/info', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
