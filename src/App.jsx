@@ -11,6 +11,7 @@ import ProductionHouseList from './pages/ProductionHouseList/ProductionHouseList
 import ProductList from './pages/ProductList/ProductList'
 import AddNewProduct from './pages/AddNewProduct/AddNewProduct'
 import InventoryShowProduct from './pages/Inventory/InventoryShowProduct'
+import InventoryShowBatch from './pages/Inventory/InventoryShowBatch'
 
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
 
             <Route path="man/productList/newProduct" element={<AddNewProduct />} />
             <Route path="man/inventoryList/showProduct" element={<InventoryShowProduct />} />
+
+            <Route path="man/inventoryList/showProduct/showBatch" element={<InventoryShowBatch />} />
           </Routes>
         </Router>
     </div>
