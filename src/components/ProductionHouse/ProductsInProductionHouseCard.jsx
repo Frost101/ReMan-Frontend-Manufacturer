@@ -1,34 +1,37 @@
 
 import { BankOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { Card} from 'antd';
+import { Card, Avatar} from 'antd';
 const { Meta } = Card;
 import { useNavigate } from 'react-router-dom';
 
 
-const ProductionHouseCard = (props) => {
-  const navigate = useNavigate();
+const ProductsInProductionHouseCard = (props) => {
   const [loading, setLoading] = useState(true);
   const onChange = (checked) => {
     setLoading(!checked);
   };
+  const navigate = useNavigate();
 
-  let productionHouse = props.value.productionHouse;
-  const manufacturerName = props.value.manufacturerName;
+  let product = props.value.product;
   const manufacturerId = props.value.manufacturerId;
+  const manufacturerName = props.value.manufacturerName;
   const manufacturerLogo = props.value.manufacturerLogo;
+  const phid = props.value.phid;
+  const productionHouseName = props.value.productionHouseName;
 
-  const goToShowProductPage = () => {
-    navigate('/man/productionHouseList/showProduct',{state:
-      {
-        manufacturerId: manufacturerId,
-        manufacturerName: manufacturerName,
-        manufacturerLogo: manufacturerLogo,
-        phid: productionHouse.phid,
-        productionHouseName: productionHouse.ProductionHouseName,
+  const goToProductBatchPage = () => {
+    navigate('/man/productionHouseList/showProduct/showBatch',{
+      state: {
+        pid: product.pid,
+        productName: product.ProductName,
+        manufacturerId : manufacturerId,
+        manufacturerName : manufacturerName,
+        manufacturerLogo : manufacturerLogo,
+        phid : phid,
+        productionHouseName : productionHouseName
       }
     })
-
   }
 
   return (
@@ -51,24 +54,24 @@ const ProductionHouseCard = (props) => {
             e.currentTarget.style.backgroundColor = ''; // Revert to the original background color on hover out
             e.currentTarget.style.transform = 'scale(1,1)';
         }}
-        onClick={goToShowProductPage}
+        onClick={goToProductBatchPage}
       >
         <Meta
-          avatar={<BankOutlined style = {{color:'#08c', fontSize: '28px'}} />}
-          title={<div style={{ fontFamily: 'Kalam', fontSize: '20px' }}>{productionHouse.ProductionHouseName}</div>}
+          avatar={<Avatar src="https://pngimg.com/d/gift_PNG100238.png" size={50} style={{ marginRight: '10px' }} /> } 
+          title={<div style={{ fontFamily: 'Kalam', fontSize: '20px' }}>{product.ProductName}</div>}
         />
         <div style={{display:'flex', paddingTop:'10px', paddingBottom: '0'}}>
             <div style={{flex:'1'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Location: {productionHouse.Street + ", "+ productionHouse.Thana + ", "+ productionHouse.Division }</p>
+                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Category: {product.CategoryName}</p>
             </div>
             <div style={{flex:'1',paddingLeft:'8px'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', fontColor:'#001529'}}>Product Categories:  {productionHouse.Type} </p>
+                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', fontColor:'#001529'}}>Weight/Volume:  {product.Weight_volume} {product.Unit} </p>
             </div>
             <div style={{flex:'1'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Size: {productionHouse.Capacity} sqft</p>
+                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Unit Price: {product.UnitPrice} </p>
             </div>
             <div style={{flex:'2'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Details: {productionHouse.Details} </p>
+                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Description: {product.Description} </p>
             </div>
            
         </div>
@@ -77,4 +80,4 @@ const ProductionHouseCard = (props) => {
     </>
   );
 };
-export default ProductionHouseCard;
+export default ProductsInProductionHouseCard;

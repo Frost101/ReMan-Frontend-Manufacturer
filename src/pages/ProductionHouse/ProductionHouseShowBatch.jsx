@@ -1,19 +1,24 @@
-import { Layout, theme, Breadcrumb } from "antd";
+import { Layout, theme, Breadcrumb, Avatar } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
 import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
-import ProductionHouseCard from "../../components/common/ProductionHouseCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
+import BatchesInProductionHouseCard from "../../components/ProductionHouse/BatchesInProductionHouseCard";
 
-function ProductionHouseList(){
+
+function ProductionHouseShowBatch(){
     const location = useLocation();
 
+    const pid = location.state.pid;
+    const productName = location.state.productName;
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
+    const phid = location.state.phid;
+    const productionHouseName = location.state.productionHouseName;
     
     //* Menu Collapse
     const [collapsed, setCollapsed] = useState(false);
@@ -33,7 +38,7 @@ function ProductionHouseList(){
 
 
     //* Set inventory list
-    const [productionHouseList, setProductionHouseList] = useState([]);
+    const [batchList, setBatchList] = useState([]);
 
 
 
@@ -42,10 +47,11 @@ function ProductionHouseList(){
     useEffect(() => {
         const fetchData = async () => {
             let data = {
-                manufacturerId: manufacturerId
+                phid : phid,
+                pid : pid
             }
             try{
-                response = await fetch(import.meta.env.VITE_API_URL+'/productionhouse/productionHouseList', {
+                response = await fetch(import.meta.env.VITE_API_URL+'/batch/productionHouseBatchList', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -54,7 +60,8 @@ function ProductionHouseList(){
                 });
         
                 receivedData = await response.json();
-                setProductionHouseList(receivedData);
+                setBatchList(receivedData);
+                console.log(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -64,10 +71,12 @@ function ProductionHouseList(){
         fetchData();
       }, []); 
 
-      
+    
     return (
         <div>
             <Layout>
+
+               
                 <Sider 
                 collapsed={collapsed}
                 collapsible
@@ -113,7 +122,9 @@ function ProductionHouseList(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Product</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Batch</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -143,13 +154,32 @@ function ProductionHouseList(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Production Houses :</p>
                             
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
+                                <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
+                                    <img
+                                    src="https://pngimg.com/d/gift_PNG100238.png"
+                                    alt="Avatar"
+                                    style={{ marginRight: '10px', width: '50px', height: '50px' }}
+                                    />
+                                    {productName}
+                                </p>
+                            </div>
+
+                            <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Batches in {productionHouseName} :</p>
+                        
                             {
-                                productionHouseList.length !=0 && productionHouseList.productionHouses.map((productionHouse, index) => {
-                                    return <ProductionHouseCard key = {index} productionHouse={productionHouse}/>
-                                }
-                                )
+                                (batchList != undefined && batchList.length != 0) && batchList.batches.map((batch, index) => {
+                                   
+                                       return(
+                                        <BatchesInProductionHouseCard key = {index} value={{
+                                            batch : batch
+                                        }} />
+                                       );
+                                        // console.log(product.Product);
+                                    
+                                    
+                                })
                             }
                             
                         </Content>
@@ -164,4 +194,4 @@ function ProductionHouseList(){
     )
 }
 
-export default ProductionHouseList;
+export default ProductionHouseShowBatch;

@@ -4,19 +4,16 @@ const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
 import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
+import ProductionHouseCard from "../../components/common/ProductionHouseCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
-import ProductsInInventoryCard from "../../components/Inventory/ProductsInInventoryCard";
 
-
-function InventoryShowProduct(){
+function ProductionHouseList(){
     const location = useLocation();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
-    const iid = location.state.iid;
-    const inventoryName = location.state.inventoryName;
     
     //* Menu Collapse
     const [collapsed, setCollapsed] = useState(false);
@@ -36,7 +33,7 @@ function InventoryShowProduct(){
 
 
     //* Set inventory list
-    const [productList, setProductList] = useState([]);
+    const [productionHouseList, setProductionHouseList] = useState([]);
 
 
 
@@ -45,10 +42,10 @@ function InventoryShowProduct(){
     useEffect(() => {
         const fetchData = async () => {
             let data = {
-                iid : iid
+                manufacturerId: manufacturerId
             }
             try{
-                response = await fetch(import.meta.env.VITE_API_URL+'/products/byInventory', {
+                response = await fetch(import.meta.env.VITE_API_URL+'/productionhouse/productionHouseList', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -57,8 +54,7 @@ function InventoryShowProduct(){
                 });
         
                 receivedData = await response.json();
-                setProductList(receivedData);
-                console.log(receivedData);
+                setProductionHouseList(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -68,12 +64,10 @@ function InventoryShowProduct(){
         fetchData();
       }, []); 
 
-    
+      
     return (
         <div>
             <Layout>
-
-               
                 <Sider 
                 collapsed={collapsed}
                 collapsible
@@ -119,8 +113,7 @@ function InventoryShowProduct(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory </p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Product</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -150,26 +143,21 @@ function InventoryShowProduct(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {inventoryName} :</p>
-                            {
-                                (productList != undefined && productList.length != 0) && productList.productsInInventory.map((product, index) => {
-                                   
-                                       return(
-                                        <ProductsInInventoryCard key = {index} value={{
-                                            product: product,
-                                            manufacturerId : manufacturerId,
-                                            manufacturerName : manufacturerName,
-                                            manufacturerLogo : manufacturerLogo,
-                                            iid : iid,
-                                            inventoryName : inventoryName
-                                        }} />
-                                       );
-                                        // console.log(product.Product);
-                                    
-                                    
-                                })
-                            }
+                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Production Houses :</p>
                             
+                            {
+                                productionHouseList.length !=0 && productionHouseList.productionHouses.map((productionHouse, index) => {
+                                    return <ProductionHouseCard key = {index} value={
+                                        {
+                                            manufacturerName: manufacturerName,
+                                            manufacturerId: manufacturerId,
+                                            manufacturerLogo: manufacturerLogo,
+                                            productionHouse: productionHouse
+                                        }
+                                    }/>
+                                }
+                                )
+                            }
                             
                         </Content>
                     </Layout>
@@ -183,4 +171,4 @@ function InventoryShowProduct(){
     )
 }
 
-export default InventoryShowProduct;
+export default ProductionHouseList;

@@ -6,7 +6,7 @@ const { Meta } = Card;
 import { useNavigate } from 'react-router-dom';
 
 
-const BatchesInInventoryCard = (props) => {
+const BatchesInProductionHouseCard = (props) => {
   const [loading, setLoading] = useState(true);
   const onChange = (checked) => {
     setLoading(!checked);
@@ -62,11 +62,6 @@ const BatchesInInventoryCard = (props) => {
   }
 
    getColor(batch.ExpiryDate);
-  
-
-  const goToProductBatchPage = () => {
-    
-  }
 
   
 
@@ -91,7 +86,7 @@ const BatchesInInventoryCard = (props) => {
             e.currentTarget.style.backgroundColor = bgColor; // Revert to the original background color on hover out
             e.currentTarget.style.transform = 'scale(1,1)';
         }}
-        onClick={goToProductBatchPage}
+        
       >
         <Meta
           avatar={<Avatar src="https://pngimg.com/d/gift_PNG100238.png" size={50} style={{ marginRight: '10px' }} /> } 
@@ -107,44 +102,10 @@ const BatchesInInventoryCard = (props) => {
             <div style={{flex:'1'}}>
                 <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}> Quantity: {batch.Quantity} </p>
             </div>
-            <div style={{flex:'1'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', display:'flex', alignItems:'center'}}> 
-                In MarketPlace:
-                {
-                        batch.MarketStatus ? 
-                        (
-                        <> 
-                            Yes
-                            <div
-                            style={{
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: 'green',
-                                marginLeft: '8px',                   
-                            }}> </div>
-                        </>):
-                        (
-                        <>
-                            No
-                            <div
-                            style={{
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: 'red',
-                                marginLeft: '8px',                   
-                            }}> </div>
-                        </>
-                        )
-                    }
-                </p>
-            </div>
-           
         </div>
       </Card>
       
     </>
   );
 };
-export default BatchesInInventoryCard;
+export default BatchesInProductionHouseCard;

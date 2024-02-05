@@ -6,17 +6,17 @@ import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
-import ProductsInInventoryCard from "../../components/Inventory/ProductsInInventoryCard";
+import ProductsInProductionHouseCard from "../../components/ProductionHouse/ProductsInProductionHouseCard";
 
-
-function InventoryShowProduct(){
+function ProductionHouseShowProduct(){
     const location = useLocation();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
-    const iid = location.state.iid;
-    const inventoryName = location.state.inventoryName;
+    const phid = location.state.phid;
+    const productionHouseName = location.state.productionHouseName;
+    console.log(phid);
     
     //* Menu Collapse
     const [collapsed, setCollapsed] = useState(false);
@@ -45,10 +45,10 @@ function InventoryShowProduct(){
     useEffect(() => {
         const fetchData = async () => {
             let data = {
-                iid : iid
+                phid : phid
             }
             try{
-                response = await fetch(import.meta.env.VITE_API_URL+'/products/byInventory', {
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/byProductionHouse', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ function InventoryShowProduct(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory </p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Product</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
@@ -150,18 +150,18 @@ function InventoryShowProduct(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {inventoryName} :</p>
+                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {productionHouseName} :</p>
                             {
-                                (productList != undefined && productList.length != 0) && productList.productsInInventory.map((product, index) => {
+                                (productList != undefined && productList.length != 0) && productList.productsInProductionHouse.map((product, index) => {
                                    
                                        return(
-                                        <ProductsInInventoryCard key = {index} value={{
+                                        <ProductsInProductionHouseCard key = {index} value={{
                                             product: product,
                                             manufacturerId : manufacturerId,
                                             manufacturerName : manufacturerName,
                                             manufacturerLogo : manufacturerLogo,
-                                            iid : iid,
-                                            inventoryName : inventoryName
+                                            phid : phid,
+                                            productionHouseName : productionHouseName
                                         }} />
                                        );
                                         // console.log(product.Product);
@@ -183,4 +183,4 @@ function InventoryShowProduct(){
     )
 }
 
-export default InventoryShowProduct;
+export default ProductionHouseShowProduct;
