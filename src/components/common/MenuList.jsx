@@ -41,6 +41,12 @@ const MenuList = (props) => {
                                                     manufacturerLogo: props.value.manufacturerLogo}});
     }
 
+    const goToOrderManagementPage = () => {
+        navigate("/man/orderManagement", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
     return (
         <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'} }>
             <Menu.Item key="home" icon={<HomeOutlined />} onClick={goToHomePage} className="menu-item">
@@ -49,8 +55,8 @@ const MenuList = (props) => {
             <Menu.Item key="Profile" icon={<ProfileOutlined />} className="menu-item">
                 Profile
             </Menu.Item>
-            <Menu.Item key="history" icon={<HistoryOutlined />} className="menu-item">
-                Order History
+            <Menu.Item key="history" icon={<HistoryOutlined />} onClick={goToOrderManagementPage} className="menu-item">
+                Order Management
             </Menu.Item>
             <Menu.Item key="inventory" icon={<ShoppingCartOutlined />} onClick={goToInventoryPage} className="menu-item">
                 Inventory
