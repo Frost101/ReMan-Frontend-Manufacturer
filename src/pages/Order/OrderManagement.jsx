@@ -18,7 +18,7 @@ function OrderManagement(){
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
     
-    //* Menu Collapse
+    //* Menu Collapse ...
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer, borderRadiusLG},
