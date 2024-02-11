@@ -1,6 +1,6 @@
 import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar } from "antd";
 import MenuList from "../../components/common/MenuList";
-import ProductCard from "../../components/common/ProductCard";
+import ProductsInOrderCard from "../../components/Order/ProductsInOrderCard";
 const {Content, Sider} = Layout;
 const { Panel } = Collapse;
 import { useState, useEffect, } from "react";
@@ -358,12 +358,20 @@ function OrderManagement(){
                                                 }}
                                               >
                                                 {
-                                                    // ( productList != undefined && productList.length != 0) && productList.products.map((product, index) => {
-                                                    //     return (
-                                                    //             (product.CategoryName == category.CategoryName) && (<ProductCard key = {index} product={product} />) 
+                                                    ( order.Products != undefined && order.Products.length != 0) && order.Products.map((product, index) => {
+                                                        return (
+                                                                <ProductsInOrderCard key = {index} value={
+                                                                    {
+                                                                        product: product,
+                                                                        manufacturerId: manufacturerId,
+                                                                        manufacturerName: manufacturerName,
+                                                                        manufacturerLogo: manufacturerLogo,
+                                                                        oid: order.oid
+                                                                    }
+                                                                } /> 
 
-                                                    //             );
-                                                    // })
+                                                                );
+                                                    })
                                                 }
                                             </Panel>);
                                         }
