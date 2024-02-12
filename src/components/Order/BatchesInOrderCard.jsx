@@ -98,7 +98,7 @@ const BatchesInOrderCard = (props) => {
          notification.success({
             message: 'Operation Successful!',
             description: 'Quantity for shipment has been selected successfully!',
-            duration: 3, // Duration in seconds
+            duration: 3, //? Duration in seconds
          });
 
          setModalVisible(false);
@@ -122,20 +122,7 @@ const BatchesInOrderCard = (props) => {
         catch(error){
             console.log("Error while fetching batches from inventories");
         }
-
         
-       
-        
-        
-        //  navigate('/man/orderManagement/dispatch',{
-        //     state: {
-        //       oid: oid,
-        //       pid: pid,
-        //       manufacturerId : manufacturerId,
-        //       manufacturerName : manufacturerName,
-        //       manufacturerLogo : manufacturerLogo,
-        //     }
-        // });
         window.location.reload();
     }
 

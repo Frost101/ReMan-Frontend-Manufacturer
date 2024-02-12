@@ -1,10 +1,10 @@
-import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar, Select, Spin } from "antd";
+import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar, Select, Spin, Input, Space } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 const { Panel } = Collapse;
 import { useState, useEffect, } from "react";
 import { useNavigate } from "react-router-dom";
-import { CodeSandboxCircleFilled, HomeOutlined, CaretRightOutlined, PlusCircleFilled, MinusCircleFilled, CheckCircleFilled} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, SearchOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
@@ -93,6 +93,31 @@ function OrderDispatch(){
             console.log("Error while fetching batches from inventories");
         }
     }
+
+
+
+
+    //* Handle batch search
+    const handleBatchSearch = (e) => {
+        const searchbid = e.target.value;
+        console.log(batchList);
+
+
+        let filtered = {
+            batches: []
+        };
+
+        if(batchList != undefined && batchList.length != 0){
+            //* Filter batch list
+            for(let i=0; i<batchList.batches.length; i++) {
+                if(batchList.batches[i].bid.includes(searchbid)){
+                    filtered.batches.push(batchList.batches[i]);
+                }
+            }
+
+            setShowBatchList(filtered);
+        }
+    };
 
 
     //* Fetch Order List
@@ -238,12 +263,16 @@ function OrderDispatch(){
                             overflow : 'initial'
                             }}
                         >
-                            
-                            {/* //*Ordered Product Info */}
+
+                            <div style={{display:'flex', justifyContent:'center'}}>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}> Dispatch Orders:</p>
+
+
+                                {/* //*Ordered Product Info */}
                             {
                                 (productInfo != undefined && productInfo.length != 0) &&
 
-                                <div style={{display:'flex', justifyContent:'left'}}>
+                                <div style={{display:'flex',flex:'1', justifyContent:'right'}}>
                                     <div style={{}}>
                                         <p style={{color:'blue',fontSize:'20px',fontFamily:'Kalam'}}> 
                                         Product Name: {productInfo.ProductName} <br/>
@@ -254,12 +283,29 @@ function OrderDispatch(){
                                     </div>
                                 </div>
                             }
+                            </div>
 
-                            <div style={{display:'flex', justifyContent:'center'}}>
-                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}> Dispatch Orders:</p>
-                                <div style={{flex:'3', display:'flex', justifyContent:'center', justifySelf:'right', marginTop:'20px'}}>
-                                    <div style={{flex:'1', display:'flex', justifyContent:'center', justifySelf:'right'}}>
-                                        <Select defaultValue="default" onChange={handleInventoryChange} style={{fontFamily:'Kalam', border: '1px solid blue', borderRadius: '8px', width:'60%'}}>
+                            <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'right'}}>
+                                        <Input
+                                            placeholder="Enter Batch ID"
+                                            style={{
+                                                display:'flex',
+                                                borderRadius: '8px', // Set the border radius for rounded corners
+                                                border: '2px solid blue', // Set the blue-colored border
+                                                fontFamily:'Kalam',
+                                                width:'80%'
+                                            }}
+                                            prefix={
+                                                <Space>
+                                                  <SearchOutlined style={{ color: 'blue' }} />
+                                                </Space>
+                                            }
+                                            onChange={handleBatchSearch}
+                                        />
+                                    </div>
+                                    <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                        <Select defaultValue="default" onChange={handleInventoryChange} style={{fontFamily:'Kalam', border: '2px solid blue', borderRadius: '8px', width:'80%'}}>
                                             <Select.Option value="default"  disabled key={"a"}>Select Inventories</Select.Option>
                                             {
                                                 (inventoryList != undefined && inventoryList.length != 0) &&
@@ -272,7 +318,6 @@ function OrderDispatch(){
                                             }
                                         </Select>
                                     </div>
-                                </div>
                             </div>
 
 
@@ -280,9 +325,9 @@ function OrderDispatch(){
                             {/* //*If no inventory is selected then */}
                             {
                                 selectedInventory == "default" &&
-                                <div style={{display:'flex', justifyContent:'center'}}>
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'60px'}}>
                                     <div style={{}}>
-                                        <p style={{color:'red',fontSize:'30px',fontFamily:'Kalam'}}> Please select an inventory</p>
+                                        <p style={{color:'red',fontSize:'30px',fontFamily:'Kalam'}}> Please select an inventory first</p>
                                     </div>
                                 </div>
                             }
