@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb } from "antd";
+import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
@@ -37,6 +37,7 @@ function ProductionHouseShowProduct(){
 
     //* Set inventory list
     const [productList, setProductList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
 
 
@@ -44,6 +45,7 @@ function ProductionHouseShowProduct(){
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             let data = {
                 phid : phid
             }
@@ -57,6 +59,7 @@ function ProductionHouseShowProduct(){
                 });
         
                 receivedData = await response.json();
+                setLoading(false);
                 setProductList(receivedData);
                 console.log(receivedData);
             }
@@ -151,6 +154,19 @@ function ProductionHouseShowProduct(){
                             }}
                         >
                              <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {productionHouseName} :</p>
+
+
+                             {/* //*Loading effect   */  }
+                             {
+                                loading &&
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
+                                    <Spin spinning={loading} size="large">
+                                    </Spin>
+                                </div>
+                            }
+
+
+
                             {
                                 (productList != undefined && productList.length != 0) && productList.productsInProductionHouse.map((product, index) => {
                                    

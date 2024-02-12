@@ -47,6 +47,10 @@ const MenuList = (props) => {
                                                     manufacturerLogo: props.value.manufacturerLogo}});
     }
 
+    const signout = () => {
+        navigate("/");
+    }
+
     return (
         <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'} }>
             <Menu.Item key="home" icon={<HomeOutlined />} onClick={goToHomePage} className="menu-item">
@@ -73,7 +77,7 @@ const MenuList = (props) => {
             <Menu.Item key="data" icon={<AreaChartOutlined />} className="menu-item">
                 Data Analytics
             </Menu.Item>
-            <Menu.Item key="signout" icon={<PoweroffOutlined color='red' />} className="menu-item">
+            <Menu.Item key="signout" icon={<PoweroffOutlined color='red' /> } className="menu-item" onClick={signout}>
                 SignOut
             </Menu.Item>
 

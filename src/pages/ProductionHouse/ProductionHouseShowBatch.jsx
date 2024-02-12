@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb, Avatar } from "antd";
+import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
@@ -39,6 +39,7 @@ function ProductionHouseShowBatch(){
 
     //* Set inventory list
     const [batchList, setBatchList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
 
 
@@ -46,6 +47,7 @@ function ProductionHouseShowBatch(){
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             let data = {
                 phid : phid,
                 pid : pid
@@ -60,6 +62,7 @@ function ProductionHouseShowBatch(){
                 });
         
                 receivedData = await response.json();
+                setLoading(false);
                 setBatchList(receivedData);
                 console.log(receivedData);
             }
@@ -167,6 +170,15 @@ function ProductionHouseShowBatch(){
                             </div>
 
                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Batches in {productionHouseName} :</p>
+
+                             {/* //*Loading effect   */  }
+                             {
+                                loading &&
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
+                                    <Spin spinning={loading} size="large">
+                                    </Spin>
+                                </div>
+                            }
                         
                             {
                                 (batchList != undefined && batchList.length != 0) && batchList.batches.map((batch, index) => {

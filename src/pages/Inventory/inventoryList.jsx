@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb } from "antd";
+import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
@@ -34,6 +34,7 @@ function InventoryList(){
 
     //* Set inventory list
     const [inventoryList, setInventoryList] = useState([]);
+    const [loading, setLoading] = useState(false); 
 
 
 
@@ -41,6 +42,8 @@ function InventoryList(){
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
+
+            setLoading(true);
             let data = {
                 manufacturerId: manufacturerId
             }
@@ -54,7 +57,9 @@ function InventoryList(){
                 });
         
                 receivedData = await response.json();
+                setLoading(false);
                 setInventoryList(receivedData);
+                
             }
             catch(error){
                 console.log("Error");
@@ -146,6 +151,16 @@ function InventoryList(){
                             }}
                         >
                              <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Inventories:</p>
+
+                            {/* //*Loading effect   */  }
+                            {
+                                loading &&
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
+                                    <Spin spinning={loading} size="large">
+                                    </Spin>
+                                </div>
+                            }
+
                             
                             {
                                 inventoryList.length !=0 && inventoryList.inventories.map((inventory, index) => {

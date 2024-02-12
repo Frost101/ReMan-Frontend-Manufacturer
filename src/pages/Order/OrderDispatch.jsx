@@ -75,7 +75,7 @@ function OrderDispatch(){
             pid: pid
         }
         try{
-            response = await fetch(import.meta.env.VITE_API_URL+'/batch/inventoryBatchList', {
+            response = await fetch(import.meta.env.VITE_API_URL+'/batch/inventoryBatchListWithoutSale', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

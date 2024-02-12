@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar } from "antd";
+import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 import ProductsInOrderCard from "../../components/Order/ProductsInOrderCard";
 const {Content, Sider} = Layout;
@@ -52,6 +52,7 @@ function OrderManagement(){
     //* Set order list
     const [orderList, setOrderList] = useState([]);
     const [showOrderList, setShowOrderList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     //* Add product, remove product, update product
     const addProduct = () => {
@@ -64,6 +65,7 @@ function OrderManagement(){
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             let data = {
                 manufacturerId: manufacturerId
             }
@@ -77,6 +79,7 @@ function OrderManagement(){
                 });
         
                 receivedData = await response.json();
+                setLoading(false);
                 setOrderList(receivedData);
                 setShowOrderList(receivedData);
                 console.log(receivedData);
@@ -179,23 +182,21 @@ function OrderManagement(){
                                 
                                 <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>My Orders:</p>
                                 <div style={{flex:'1', display:'flex', justifyContent:'center', justifySelf:'right'}}>
-                                    <div onClick={addProduct} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
-                                        <PlusCircleFilled style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Product</p>
-                                    </div>
-
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
-                                        <CheckCircleFilled style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Update Product Details</p>
-                                    </div>
-
-                                    <div  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
-                                        <MinusCircleFilled  style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px' }}>Remove Product</p>
-                                    </div>
+                                    
                                    
                                 </div>
                             </div>
+
+
+
+                            {/* //*Loading effect while fetching or filtering batches */  }
+                            {
+                                loading &&
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
+                                    <Spin spinning={loading} size="large">
+                                    </Spin>
+                                </div>
+                            }
 
 
                              {/* <Card title="Collapsible Card"> */}

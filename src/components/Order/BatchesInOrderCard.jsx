@@ -160,7 +160,7 @@ const BatchesInOrderCard = (props) => {
                             value={value}
                             onChange={(newValue) => setValue(newValue)}
                             min={0}
-                            max={totalQuantity-shippedQuantity}
+                            max={Math.min(batch.Quantity, totalQuantity-shippedQuantity)}
                             style={{border: '1px solid blue', borderRadius: '8px'}}
                         />
                     <Button icon={<PlusOutlined />} onClick={handleIncrease} style={{border: '1px solid blue', borderRadius: '8px'}}/>
@@ -201,39 +201,6 @@ const BatchesInOrderCard = (props) => {
             </div>
             <div style={{flex:'1'}}>
                 <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}> Quantity: {batch.Quantity} </p>
-            </div>
-            <div style={{flex:'1'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', display:'flex', alignItems:'center'}}> 
-                Sale Rate:
-                {
-                        (batch.Sale != 0) ? 
-                        (
-                        <> 
-                            {batch.Sale}
-                            <div
-                            style={{
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: 'green',
-                                marginLeft: '8px',                   
-                            }}> </div>
-                        </>):
-                        (
-                        <>
-                            Not in Sale
-                            <div
-                            style={{
-                                width: '10px',
-                                height: '10px',
-                                borderRadius: '50%',
-                                backgroundColor: 'red',
-                                marginLeft: '8px',                   
-                            }}> </div>
-                        </>
-                        )
-                    }
-                </p>
             </div>
            
         </div>

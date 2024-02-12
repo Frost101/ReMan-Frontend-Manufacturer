@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar } from "antd";
+import { Layout, theme, Breadcrumb,  Spin, Collapse, Avatar } from "antd";
 import MenuList from "../../components/common/MenuList";
 import ProductCard from "../../components/common/ProductCard";
 const {Content, Sider} = Layout;
@@ -38,6 +38,7 @@ function ProductList(){
     //* Set inventory list
     const [categoryList, setCategoryList] = useState([]);
     const [productList, setProductList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
 
     //* Add product, remove product, update product
@@ -51,6 +52,8 @@ function ProductList(){
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
+
+            setLoading(true);
             let data = {
                 manufacturerId: manufacturerId
             }
@@ -82,6 +85,7 @@ function ProductList(){
                 });
         
                 receivedData = await response.json();
+                setLoading(false);
                 setProductList(receivedData);
                 console.log(receivedData);
             }
@@ -92,9 +96,6 @@ function ProductList(){
     
         fetchData();
       }, []); 
-
-      console.log(categoryList);
-      console.log(productList);
 
     return (
         <div>
@@ -196,6 +197,17 @@ function ProductList(){
                                    
                                 </div>
                             </div>
+
+
+
+                             {/* //*Loading effect   */  }
+                             {
+                                loading &&
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
+                                    <Spin spinning={loading} size="large">
+                                    </Spin>
+                                </div>
+                            }
 
 
                              {/* <Card title="Collapsible Card"> */}
