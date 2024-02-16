@@ -1,22 +1,39 @@
-                                <Collapse accordion expandIconPosition="left" expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                                    {
-                                        (categoryList != undefined && categoryList.length !=0) && categoryList.uniqueCategories.map((category, index) => {
-                                            return (<Panel header={
-                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                            <Avatar src="https://i.pinimg.com/474x/8e/bc/e5/8ebce5e43c230715aa6ca5d5bd9b8f21.jpg" size={50} style={{ marginRight: '10px' }} /> {/* Use Avatar component with the image */}
-                                                            <span style={{ fontFamily: 'Kalam', fontSize: '40px' }}>{category.CategoryName}</span>
-                                                        </div>
-                                                    } key={index}>
-                                                {
-                                                    ( productList != undefined && productList.length != 0) && productList.products.map((product, index) => {
-                                                        return (
-                                                                (product.CategoryName == category.CategoryName) && (<ProductCard key = {index} product={product} />) 
+<div style={{ position: 'relative', display: 'inline-block' }}>
+                                <img src="https://firebasestorage.googleapis.com/v0/b/reman-manufacturer.appspot.com/o/images%2Fc79a4f4e-fa8f-4dc0-9c81-3dbf4a74a729?alt=media&token=3a1e8a2d-c5ff-441a-885d-718c90f2ab2c" alt="Preview" style={{ maxWidth: '100%' }} />
+                                <div
+                                    style={{
+                                    position: 'absolute',
+                                    top: '5px',
+                                    right: '5px',
+                                    cursor: 'pointer',
+                                    }}
+                                    onClick={handleDelete}
+                                >
+                                    <CloseCircleOutlined style={{ color: 'red' }} />
+                                </div>
+                            </div>
 
-                                                                );
-                                                    })
-                                                }
-                                            </Panel>);
-                                        }
-                                        )
-                                    }
-                                </Collapse>
+// Delete image
+
+
+
+let src = "https://firebasestorage.googleapis.com/v0/b/reman-manufacturer.appspot.com/o/images%2Fc79a4f4e-fa8f-4dc0-9c81-3dbf4a74a729?alt=media&token=3a1e8a2d-c5ff-441a-885d-718c90f2ab2c";
+      const handleDelete = async() => {
+        //* Delete that image with "src" link from firebase
+        try {
+            const storage = getStorage();
+
+            // Create a reference to the file to delete
+            const desertRef = ref(storage, src);
+            // Delete the file
+            deleteObject(desertRef).then(() => {
+                // File deleted successfully
+                console.log('File deleted successfully');
+            }).catch((error) => {
+                // Uh-oh, an error occurred!
+                console.log('Uh-oh, an error occurred!');
+            });
+          } catch (error) {
+            console.error('Error deleting image:', error.message);
+          }
+      };

@@ -16,6 +16,7 @@ import ProductionHouseShowProduct from './pages/ProductionHouse/ProductionHouseS
 import ProductionHouseShowBatch from './pages/ProductionHouse/ProductionHouseShowBatch'
 import OrderManagement from './pages/Order/OrderManagement'
 import OrderDispatch from './pages/Order/OrderDispatch'
+import ShiftBatch from './pages/Inventory/ShiftBatch'
 
 
 function App() {
@@ -31,18 +32,20 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             
             <Route path="/man/home" element={<HomePage />} />
-            <Route path="man/inventoryList" element={<InventoryList />} />
-            <Route path="man/productionHouseList" element={<ProductionHouseList />} />
-            <Route path="man/productList" element={<ProductList />} />
-            <Route path="man/orderManagement" element={<OrderManagement />} />
 
-            <Route path="man/productList/newProduct" element={<AddNewProduct />} />
+            <Route path="man/inventoryList" element={<InventoryList />} />
             <Route path="man/inventoryList/showProduct" element={<InventoryShowProduct />} />
-            <Route path="man/productionHouseList/showProduct" element={<ProductionHouseShowProduct />} />
+            <Route path="man/inventoryList/showProduct/shiftBatch" element={<ShiftBatch />} />
+            <Route path="man/inventoryList/showProduct/showBatch" element={<InventoryShowBatch />} />
+
+            <Route path="man/orderManagement" element={<OrderManagement />} />
             <Route path="man/orderManagement/dispatch" element={<OrderDispatch />} />
 
-
-            <Route path="man/inventoryList/showProduct/showBatch" element={<InventoryShowBatch />} />
+            <Route path="man/productList" element={<ProductList />} />
+            <Route path="man/productList/newProduct" element={<AddNewProduct />} />
+          
+            <Route path="man/productionHouseList" element={<ProductionHouseList />} />
+            <Route path="man/productionHouseList/showProduct" element={<ProductionHouseShowProduct />} />
             <Route path="man/productionHouseList/showProduct/showBatch" element={<ProductionHouseShowBatch />} />
           </Routes>
         </Router>

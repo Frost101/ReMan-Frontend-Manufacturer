@@ -1,13 +1,17 @@
 
-import { BankOutlined } from '@ant-design/icons';
+import { CheckCircleTwoTone } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { Card, Avatar} from 'antd';
+import { Card, Avatar, notification} from 'antd';
 const { Meta } = Card;
 import { useNavigate } from 'react-router-dom';
 
 
-const BatchesInInventoryCard = (props) => {
+const ShiftBatchCard = (props) => {
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(false);
+  const [Quantity, setQuantity] = useState(0);
+  const [visible, setVisible] = useState(false);
+
   const onChange = (checked) => {
     setLoading(!checked);
   };
@@ -25,7 +29,6 @@ const BatchesInInventoryCard = (props) => {
   }
 
   let batch = props.value.batch;
-
 
 
   //* Set color based on expiry date
@@ -62,17 +65,34 @@ const BatchesInInventoryCard = (props) => {
 
   getColor(processDate(batch.ExpiryDate));
   
+    const setSelectionStatus = () => {
+        if(!selected){
+            props.value.addToBatchList(batch.bid);  
+            notification.success({
+              message: `${batch.bid} added to the list`,
+              duration: 2, //? Duration in seconds
+           });
+        }
+        else{
+            props.value.removeFromBatchList(batch.bid);
+            notification.error({
+              message: `${batch.bid} removed from the list`,
+              duration: 2, //? Duration in seconds
+           });
+        }
+        setSelected(!selected);
+        setVisible(!visible);
+    }
 
-  const goToProductBatchPage = () => {
+
     
-  }
-
   
 
   return (
     <>
       
       <Card
+        onClick={setSelectionStatus}
         style={{
           width: '100%',
           marginTop: 16,
@@ -90,7 +110,6 @@ const BatchesInInventoryCard = (props) => {
             e.currentTarget.style.backgroundColor = bgColor; // Revert to the original background color on hover out
             e.currentTarget.style.transform = 'scale(1,1)';
         }}
-        onClick={goToProductBatchPage}
       >
         <Meta
           avatar={<Avatar src="https://pngimg.com/d/gift_PNG100238.png" size={50} style={{ marginRight: '10px' }} /> } 
@@ -142,7 +161,7 @@ const BatchesInInventoryCard = (props) => {
 
             <div style={{flex:'1'}}>
                 <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', display:'flex', alignItems:'center'}}> 
-                Sale Status :
+                Sale Status:
                 {
                         batch.Sale == 0 ? 
                         (
@@ -173,6 +192,14 @@ const BatchesInInventoryCard = (props) => {
                     }
                 </p>
             </div>
+
+            {
+                visible && (
+                    <div style={{textAlign:'right'}}>
+                        <CheckCircleTwoTone  style={{ fontSize: '50px', color: '#08c' }} />
+                    </div>
+                )
+            }
            
         </div>
       </Card>
@@ -180,4 +207,4 @@ const BatchesInInventoryCard = (props) => {
     </>
   );
 };
-export default BatchesInInventoryCard;
+export default ShiftBatchCard;

@@ -2,17 +2,15 @@ import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, TagsOutlined, ShoppingCartOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, CheckCircleTwoTone} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
-import BatchesInInventoryCard from "../../components/Inventory/BatchesInInventoryCard";
-import { useNavigate } from "react-router-dom";
+import ShiftBatchCard from "../../components/Inventory/ShiftBatchCard";
 
 
-function InventoryShowBatch(){
+function ShiftBatch(){
     const location = useLocation();
-    const navigate = useNavigate();
 
     const pid = location.state.pid;
     const productName = location.state.productName;
@@ -42,6 +40,7 @@ function InventoryShowBatch(){
     //* Set inventory list
     const [batchList, setBatchList] = useState([]);
     const [loading, setLoading] = useState(false); 
+    const [shiftBatchList, setShiftBatchList] = useState([]);
 
 
 
@@ -78,19 +77,14 @@ function InventoryShowBatch(){
 
 
 
-      const goToShiftBatch = (batchId) => {
-            navigate("/man/inventoryList/showProduct/shiftBatch", {state: 
-                {
-                    manufacturerId:manufacturerId,
-                    manufacturerName:manufacturerName,
-                    manufacturerLogo:manufacturerLogo,
-                    pid:pid,
-                    productName:productName,
-                    iid:iid,
-                    inventoryName:inventoryName,      
-                }
-                
-            })
+
+      const addToBatchList = (bid) => {
+            setShiftBatchList([...shiftBatchList, bid]);
+      }
+
+
+      const removeFromBatchList = (bid) => {
+            setShiftBatchList(shiftBatchList.filter((batch) => batch != bid));
       }
 
     
@@ -146,7 +140,8 @@ function InventoryShowBatch(){
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory </p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Product</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Batch</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Batch</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Shift</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -178,27 +173,43 @@ function InventoryShowBatch(){
                         >
                             
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
-                                <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
+                                
+                                <p style={{flex:'1', color: '#001529', fontSize: '30px', fontFamily: 'Kalam', textAlign:'left' }}>
+                                    {inventoryName} <br></br>
                                     <img
                                     src="https://pngimg.com/d/gift_PNG100238.png"
                                     alt="Avatar"
-                                    style={{ marginRight: '10px', width: '50px', height: '50px' }}
+                                    style={{ marginRight: '10px', width: '30px', height: '30px' }}
                                     />
+                                    
                                     {productName}
                                 </p>
+                                <div style={{
+                                    flex: '1',
+                                    textAlign: 'right',
+                                    overflowY: 'auto', // Enable vertical overflow
+                                    maxHeight: '100px', // Set a maximum height for scrolling
+                                    paddingRight: '10px', // Add some padding to avoid horizontal scrollbar
+                                    fontFamily: 'Kalam',
+                                    }}>
+                                        Selected Batches: <br />
+                                        {shiftBatchList.map((batch, index) => {
+                                            return(
+                                                <p key={index} style={{fontFamily:'Kalam', fontSize:'15px', color:'red'}}>{batch}</p>
+                                            );
+
+                                        }
+                                        )}
+                                </div>
+
                             </div>
 
                             <div style={{display:'flex', justifyContent:'center'}}>
-                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Batches in {inventoryName}:</p>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Select Batches:</p>
                                 <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
-                                    <div onClick={goToShiftBatch} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
-                                        <ShoppingCartOutlined style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Shift Product</p>
-                                    </div>
-
-                                    <div style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
-                                        <TagsOutlined style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Offer Sale/Discount</p>
+                                    <div style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
+                                        <CheckCircleTwoTone  style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Confirm Shift</p>
                                     </div>
                                 </div>
                             </div>
@@ -216,8 +227,10 @@ function InventoryShowBatch(){
                                 (batchList != undefined && batchList.length != 0) && batchList.batches.map((batch, index) => {
                                    
                                        return(
-                                        <BatchesInInventoryCard key = {index} value={{
-                                            batch : batch
+                                        <ShiftBatchCard key = {index} value={{
+                                            batch : batch,
+                                            addToBatchList : addToBatchList,
+                                            removeFromBatchList : removeFromBatchList,
                                         }} />
                                        );
                                         // console.log(product.Product);
@@ -238,4 +251,4 @@ function InventoryShowBatch(){
     )
 }
 
-export default InventoryShowBatch;
+export default ShiftBatch;

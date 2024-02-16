@@ -1,12 +1,32 @@
-import { Layout, theme, Breadcrumb } from "antd";
+import { Layout, theme, Breadcrumb, Upload, Button, Form,Cascader,
+    DatePicker,
+    Input,
+    InputNumber,
+    Mentions,
+    Select,
+    TreeSelect } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, CloseCircleOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
-import InventoryCard from "../../components/common/InventoryCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
+import ImgCrop from 'antd-img-crop';
+const { RangePicker } = DatePicker;
+
+
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    listAll,
+    list,
+    deleteObject,
+    getStorage
+} from "firebase/storage";
+import { storage } from "../../firebase";
+import {v4} from 'uuid';
 
 function AddNewProduct(){
     const location = useLocation();
@@ -34,7 +54,8 @@ function AddNewProduct(){
 
     //* Set inventory list
     const [inventoryList, setInventoryList] = useState([]);
-
+    const [fileList, setFileList] = useState([]);
+    const [imageUrls, setImageUrls] = useState([]);
 
 
     //* Fetch Inventory List
@@ -64,6 +85,52 @@ function AddNewProduct(){
         fetchData();
       }, []); 
 
+
+
+      
+
+
+      const onChange = ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+      };
+
+      console.log(fileList);
+
+
+      const onPreview = async (file) => {
+        let src = file.url;
+        if (!src) {
+          src = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file.originFileObj);
+            reader.onload = () => resolve(reader.result);
+          });
+        }
+        const image = new Image();
+        image.src = src;
+        const imgWindow = window.open(src);
+        imgWindow?.document.write(image.outerHTML);
+      };
+
+      const uploadImages = async () => {
+        let urls = [];
+        fileList.map(async (file) => {
+            const storageRef = ref(storage, `images/${v4()}`);
+            await uploadBytes(storageRef, file.originFileObj).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                getDownloadURL(snapshot.ref).then((url) => {
+                    urls.push(url);
+                });
+            });
+        });
+        setImageUrls(urls);
+      }
+
+      
+
+      
+
+      console.log(imageUrls);
 
     return (
         <div>
@@ -115,7 +182,8 @@ function AddNewProduct(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Inventory List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Product List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Add new</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -152,6 +220,99 @@ function AddNewProduct(){
                             <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
                                 Add A New Product
                             </p>
+
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                            }}>
+                                <Form
+                                name="login-form"
+                                labelCol={{span:8}}
+                                initialValues={{ remember: true }}
+                                style={{
+                                    padding: '16px',          // Add padding for better appearance
+                                    width: '100%', 
+                                }}
+                                 >
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>ProductName:</h3>
+                                <Form.Item
+                                    name="ProductName"
+                                    rules= {[
+                                        {
+                                            required: true,
+                                            type: 'text',
+                                            message:
+                                                'Enter a valid product name!',
+                                        },
+                                    ]}
+                                    hasFeedback
+                                    style={{textAlign:'center'}}
+                                >
+                                    <Input 
+                                        placeholder='abc Juice'
+                                        maxLength={30}
+                                        showCount
+                                        allowClear
+                                        style={{
+                                            width: '80%',
+                                            margin: 'auto',
+                                            border: '2px solid blue',    // Set the border color to blue
+                                            borderRadius: '8px',        // Set border-radius for rounded corners
+                                            padding: '8px',             // Add padding for better appearance
+                                            boxSizing: 'border-box',     // Include padding and border in the total width
+                                          }}
+                                    />
+                                </Form.Item>
+
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Password:</h3>
+                                <Form.Item
+                                    name="Description"
+                                    type="text"
+                                    rules={[{ required: true, message: 'Please input your password!' }]}
+                                    style={{textAlign:'center'}}
+                                >
+                                    {/* <p style={{fontFamily:'Kalam'}}>Password:</p> */}
+                                    <Input
+                                    allowClear
+                                    style={{
+                                        width: '80%',
+                                        margin: 'auto',
+                                        border: '2px solid blue',    // Set the border color to blue
+                                        borderRadius: '8px',        // Set border-radius for rounded corners
+                                        padding: '8px',             // Add padding for better appearance
+                                        boxSizing: 'border-box',     // Include padding and border in the total width
+                                      }}
+                                    rows={4}
+                                    />
+                                </Form.Item>
+
+                                <Form.Item>
+                                    <Button block type="primary" htmlType="submit">
+                                    Log in
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                            </div>
+
+                            <div style={{display:'flex', justifyContent:'center'}}>
+                                <ImgCrop rotationSlider>
+                                    <Upload
+                                        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        onChange={onChange}
+                                        onPreview={onPreview}
+                                        preventDefault={false}
+                                    >
+                                        {fileList.length < 5 && '+ Upload'}
+                                    </Upload>
+                                </ImgCrop>
+                            </div>
+                            <Button onClick={uploadImages}>Upload</Button>
+
+
                         </Content>
 
 

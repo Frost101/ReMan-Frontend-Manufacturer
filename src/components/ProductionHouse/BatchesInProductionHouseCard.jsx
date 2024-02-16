@@ -25,8 +25,6 @@ const BatchesInProductionHouseCard = (props) => {
   }
 
   let batch = props.value.batch;
-  batch.ManufacturingDate = processDate(batch.ManufacturingDate);
-  batch.ExpiryDate = processDate(batch.ExpiryDate);
 
 
   //* Set color based on expiry date
@@ -61,7 +59,7 @@ const BatchesInProductionHouseCard = (props) => {
     }
   }
 
-   getColor(batch.ExpiryDate);
+  getColor(processDate(batch.ExpiryDate));
 
   
 
@@ -94,10 +92,10 @@ const BatchesInProductionHouseCard = (props) => {
         />
         <div style={{display:'flex', paddingTop:'10px', paddingBottom: '0'}}>
             <div style={{flex:'1'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Manufacturing Date: { batch.ManufacturingDate}</p>
+                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}>Manufacturing Date: {processDate(batch.ManufacturingDate)}</p>
             </div>
             <div style={{flex:'1',paddingLeft:'8px'}}>
-                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', fontColor:'#001529'}}>Expiry Date:  {batch.ExpiryDate} </p>
+                <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0', fontColor:'#001529'}}>Expiry Date:  {processDate(batch.ExpiryDate)} </p>
             </div>
             <div style={{flex:'1'}}>
                 <p style={{fontFamily:'Kalam', fontSize:'15px', margin:'0'}}> Quantity: {batch.Quantity} </p>
