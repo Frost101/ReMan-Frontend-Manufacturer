@@ -315,7 +315,7 @@ function AddNewProduct(){
                                 }}
                                  >
 
-                                <Divider orientation="left" style={{ width:'80%', color: 'red', borderColor: 'red', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                <Divider orientation="left" style={{ width:'80%', color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
                                     Product Details Section
                                 </Divider>
 
@@ -402,7 +402,7 @@ function AddNewProduct(){
 
 
 
-                                <Divider orientation="left" style={{ color: 'red', borderColor: 'red', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
                                     Weight & Price Adjustment Section
                                 </Divider>
 
@@ -693,7 +693,7 @@ function AddNewProduct(){
 
                                 </div>
 
-                                <Divider orientation="left" style={{ color: 'red', borderColor: 'red', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
                                     Image Upload Section
                                 </Divider>
 
