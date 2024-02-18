@@ -5,6 +5,7 @@ import { Layout, theme, Breadcrumb, Upload, Button, Form,Cascader,
     Mentions,
     Select,
     TreeSelect,
+    notification,
     Divider } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
@@ -12,7 +13,7 @@ import { useState, useEffect} from "react";
 import { CodeSandboxCircleFilled, HomeOutlined, CloseCircleOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import ImgCrop from 'antd-img-crop';
 const { RangePicker } = DatePicker;
 
@@ -31,6 +32,7 @@ import {v4} from 'uuid';
 
 function AddNewProduct(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
@@ -126,15 +128,82 @@ function AddNewProduct(){
         setImageUrls(urls);
       }
 
-      const options = [
-        'Option 1',
-        'Option 2',
-        'Option 3',
-        'Option 4',
-        'Option 5',
-        'Option 6',
-        'bara'
-      ];
+      const onFinish = async (values) => { 
+
+        if(fileList.length === 0){
+            notification.error({
+                message: `Please upload at least one image`,
+                duration: 1, //? Duration in seconds
+            });
+            return;
+        }
+
+        //* Upload images to firebase storage
+        let urls = [];
+        fileList.map(async (file) => {
+            const storageRef = ref(storage, `images/${manufacturerName}/${values.ProductName}/${v4()}`);
+            await uploadBytes(storageRef, file.originFileObj).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                getDownloadURL(snapshot.ref).then((url) => {
+                    urls.push(url);
+                });
+            });
+        });
+        setImageUrls(urls);
+
+         //* Add image urls to the values object
+        values.Image = urls;
+
+        console.log('Received values:', values);
+
+
+        let response,receivedData;
+        let data = {
+            MID: manufacturerId,
+            ProductName: values.ProductName,
+            Description: values.Description,
+            CategoryName: values.CategoryName,
+            Weight_Volume: values.Weight_Volume,
+            Unit: values.Unit,
+            UnitPrice: values.UnitPrice,
+            MinQuantityForSale: values.MinQuantityForSale,
+            MinQuantityForDiscount: values.MinQuantityForDiscount,
+            MinimumDiscount: values.MinimumDiscount,
+            MaximumDiscount: values.MaximumDiscount,
+            DiscountRate: values.DiscountRate,
+            ProductQuantityForDiscountRate: values.ProductQuantityForDiscountRate,
+            MinimumDeliveryCharge: values.MinimumDeliveryCharge,
+            DeliveryChargeIncreaseRate: values.DeliveryChargeIncreaseRate,
+            Image: values.Image
+        }
+        try{
+            response = await fetch(import.meta.env.VITE_API_URL+'/products/newProduct', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+            });
+
+            receivedData = await response.json();
+            if(response.status === 201){
+                notification.success({
+                    message: `Product Added Successfully`,
+                    duration: 1, //? Duration in seconds
+                    onClose: () => {
+                        window.location.reload(true);
+                        
+                    },
+                });
+            }
+            else{
+                console.log(response.status);
+            }
+        }
+        catch(error){
+            console.log("Error");
+        }
+      };
 
       
 
@@ -238,7 +307,8 @@ function AddNewProduct(){
                                 <Form
                                 name="login-form"
                                 labelCol={{span:8}}
-                                initialValues={{ remember: true }}
+                                initialValues={{  }}
+                                onFinish={onFinish}
                                 style={{
                                     padding: '16px',          // Add padding for better appearance
                                     width: '100%', 
@@ -331,34 +401,333 @@ function AddNewProduct(){
                                 </Form.Item>
 
 
-                                <Divider orientation="left" style={{ color: 'blue', borderColor: 'blue', borderWidth: '5px', fontFamily:'Kalam' }}>
-                                    Price Adjustment Section
+
+                                <Divider orientation="left" style={{ color: 'red', borderColor: 'red', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                    Weight & Price Adjustment Section
+                                </Divider>
+
+                                <div style={{width: '100%', display: 'flex', flexDirection:'column' ,justifyContent: 'center', alignItems: 'center' }}>
+                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
+                                        <div style={{flex:'1', textAlign:'left' }}>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Weight/Volume:</h3>
+                                            <Form.Item
+                                                name="Weight_Volume"
+                                                rules={[
+                                                { required: true, message: 'Please enter the weight/volume' },
+                                                { type: 'number', message: 'Please enter a valid number' }
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="weight/volume"
+                                                step={1} 
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1', textAlign:'right'}}>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Unit:</h3>
+                                            <Form.Item
+                                                name="Unit"
+                                                rules={[
+                                                { required: true, message: 'Please enter a valid unit' },
+                                                { type: 'text', message: 'Please enter a valid unit' },
+                                                ]}
+                                            >
+                                                <Input
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Kg/Litre"
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
+                                        <div style={{flex:'1', textAlign:'left', }}>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Unit Price:</h3>
+                                            <Form.Item
+                                                name="UnitPrice"
+                                                rules={[
+                                                { required: true, message: 'Please enter the unit price' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Price in taka"
+                                                step={1} 
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1'}}>
+
+                                        </div>
+                                       
+
+                                    </div>
+
+                                    
+
+
+                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
+                                        <div style={{flex:'1', textAlign:'left' }}>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Minimum Quantity For Sale:</h3>
+                                            <Form.Item
+                                                name="MinQuantityForSale"
+                                                rules={[
+                                                { required: true, message: 'Please enter the unit price' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:100"
+                                                step={1} 
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1', textAlign:'right'}}>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Minimum Quantity For Discount:</h3>
+                                            <Form.Item
+                                                name="MinQuantityForDiscount"
+                                                rules={[
+                                                { required: true, message: 'Please enter minimum Quantity For Discount' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:200"
+                                                step={1}
+                                                />
+                                            </Form.Item>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
+                                        <div style={{flex:'1', textAlign:'left' }}>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Minimum Discount Rate(in %):</h3>
+                                            <Form.Item
+                                                name="MinimumDiscount"
+                                                rules={[
+                                                { required: true, message: 'Please enter the minimum discount' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:10.5"
+                                                step={0.1} 
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1', textAlign:'right'}}>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Maximum Discount(in %):</h3>
+                                            <Form.Item
+                                                name="MaximumDiscount"
+                                                rules={[
+                                                { required: true, message: 'Please enter maximum Quantity For Discount' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:20.5"
+                                                step={0.1}
+                                                />
+                                            </Form.Item>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
+                                        <div style={{flex:'1', textAlign:'left' }}>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Discount Rate Increment(in %):</h3>
+                                            <Form.Item
+                                                name="DiscountRate"
+                                                rules={[
+                                                { required: true, message: 'Please enter the discount rate increment' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:0.1"
+                                                step={0.1} 
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1', textAlign:'right'}}>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Product Quantity for discount increment:</h3>
+                                            <Form.Item
+                                                name="ProductQuantityForDiscountRate"
+                                                rules={[
+                                                { required: true, message: 'Please enter maximum Quantity For Discount' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:50"
+                                                step={1}
+                                                />
+                                            </Form.Item>
+                                        </div>
+                                    </div>
+                                    
+
+
+
+
+                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
+                                        <div style={{flex:'1', textAlign:'left' }}>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Minimum Delivery Charge(in taka):</h3>
+                                            <Form.Item
+                                                name="MinimumDeliveryCharge"
+                                                rules={[
+                                                { required: true, message: 'Please enter the minimum delivery charge' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:10"
+                                                step={1} 
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1', textAlign:'right'}}>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Delivery Charge Increment Rate per product:</h3>
+                                            <Form.Item
+                                                name="DeliveryChargeIncreaseRate"
+                                                rules={[
+                                                { required: true, message: 'Please enter maximum Quantity For Discount' },
+                                                { type: 'number', message: 'Please enter a valid number' },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                min={0}
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex:0.5"
+                                                step={0.1}
+                                                />
+                                            </Form.Item>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <Divider orientation="left" style={{ color: 'red', borderColor: 'red', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                    Image Upload Section
                                 </Divider>
 
 
+                                <h3 style={{fontFamily:'Kalam', textAlign:'center'}}>Upload Product Images:</h3>
+                                <p style={{fontFamily:'Kalam', textAlign:'center', color:'red'}}>[Please Note that the first image will be selected as the primary image]</p>
+                                <div style={{display:'flex', textAlign:'center'}}>
+                                    <ImgCrop rotationSlider>
+                                        <Upload
+                                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                                            listType="picture-card"
+                                            fileList={fileList}
+                                            onChange={onChange}
+                                            onPreview={onPreview}
+                                            preventDefault={false}
+                                        >
+                                            {fileList.length < 5 && '+ Upload'}
+                                        </Upload>
+                                    </ImgCrop>
+                                </div>
+                                {/* <Button onClick={uploadImages}>Upload</Button> */}
+
+
                                 <Form.Item>
-                                    <Button block type="primary" htmlType="submit">
-                                    Log in
+                                    <Button block type="primary" htmlType="submit" style={{width:'100%', fontFamily:'Kalam', textAlign:'center'}}>
+                                     Add Product
                                     </Button>
                                 </Form.Item>
                             </Form>
                             </div>
 
-                            <div style={{display:'flex', justifyContent:'center'}}>
-                                <ImgCrop rotationSlider>
-                                    <Upload
-                                        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                                        listType="picture-card"
-                                        fileList={fileList}
-                                        onChange={onChange}
-                                        onPreview={onPreview}
-                                        preventDefault={false}
-                                    >
-                                        {fileList.length < 5 && '+ Upload'}
-                                    </Upload>
-                                </ImgCrop>
-                            </div>
-                            <Button onClick={uploadImages}>Upload</Button>
+                            
+
+                            
 
 
                         </Content>
