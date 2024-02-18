@@ -1,6 +1,6 @@
 
 import { CheckCircleTwoTone } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Avatar, notification} from 'antd';
 const { Meta } = Card;
 import { useNavigate } from 'react-router-dom';
@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 
 const ShiftBatchCard = (props) => {
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(false);
   const [Quantity, setQuantity] = useState(0);
+  const [selected, setSelected] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const onChange = (checked) => {
@@ -29,6 +29,13 @@ const ShiftBatchCard = (props) => {
   }
 
   let batch = props.value.batch;
+  let selectedStatus = props.value.selectedStatus;
+
+
+useEffect(() => {
+    setSelected(selectedStatus);
+    setVisible(selectedStatus);
+}, [selectedStatus]);
 
 
   //* Set color based on expiry date

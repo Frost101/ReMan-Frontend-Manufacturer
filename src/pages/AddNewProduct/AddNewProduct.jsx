@@ -4,7 +4,8 @@ import { Layout, theme, Breadcrumb, Upload, Button, Form,Cascader,
     InputNumber,
     Mentions,
     Select,
-    TreeSelect } from "antd";
+    TreeSelect,
+    Divider } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
@@ -56,26 +57,25 @@ function AddNewProduct(){
     const [inventoryList, setInventoryList] = useState([]);
     const [fileList, setFileList] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
+    const [categoryList, setCategoryList] = useState([]);
 
 
     //* Fetch Inventory List
-    let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
-            let data = {
-                manufacturerId: manufacturerId
-            }
+            let response;
+            let receivedData;
             try{
-                response = await fetch('https://reman.us.to/api/inventory/inventoryList', {
-                method: 'POST',
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/allCategories', {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
                 });
         
                 receivedData = await response.json();
-                setInventoryList(receivedData);
+                setCategoryList(receivedData.categories);
+                console.log(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -126,7 +126,15 @@ function AddNewProduct(){
         setImageUrls(urls);
       }
 
-      
+      const options = [
+        'Option 1',
+        'Option 2',
+        'Option 3',
+        'Option 4',
+        'Option 5',
+        'Option 6',
+        'bara'
+      ];
 
       
 
@@ -236,13 +244,17 @@ function AddNewProduct(){
                                     width: '100%', 
                                 }}
                                  >
+
+                                <Divider orientation="left" style={{ width:'80%', color: 'red', borderColor: 'red', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                    Product Details Section
+                                </Divider>
+
                                 <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>ProductName:</h3>
                                 <Form.Item
                                     name="ProductName"
                                     rules= {[
                                         {
                                             required: true,
-                                            type: 'text',
                                             message:
                                                 'Enter a valid product name!',
                                         },
@@ -266,15 +278,15 @@ function AddNewProduct(){
                                     />
                                 </Form.Item>
 
-                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Password:</h3>
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Product Description:</h3>
                                 <Form.Item
                                     name="Description"
                                     type="text"
-                                    rules={[{ required: true, message: 'Please input your password!' }]}
+                                    rules={[{ required: true, message: 'Enter a valid product description!' }]}
                                     style={{textAlign:'center'}}
                                 >
-                                    {/* <p style={{fontFamily:'Kalam'}}>Password:</p> */}
-                                    <Input
+                      
+                                    <Input.TextArea
                                     allowClear
                                     style={{
                                         width: '80%',
@@ -287,6 +299,42 @@ function AddNewProduct(){
                                     rows={4}
                                     />
                                 </Form.Item>
+
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Product Category:</h3>
+                                <Form.Item
+                                    name="CategoryName"
+                                    rules={[{ required: true, message: 'Please select an option' }]}
+                                    style={{textAlign:'center',
+                                }}
+                                >
+                                    <Select
+                                    showSearch
+                                    style={{
+                                        width: '80%',
+                                        margin: 'auto',
+                                        border: '2px solid blue', // Blue border color
+                                         borderRadius: '8px', // Rounded corners
+                                      }}
+                                    placeholder="Type here...."
+                                    optionFilterProp="children"
+                                    filterOption={(inputValue, option) =>
+                                        option.children.toLowerCase().includes(inputValue.toLowerCase())
+                                    }
+                                    dropdownStyle={{ maxHeight: 200, overflowY: 'auto' }} 
+                                    >
+                                    {categoryList.map((option) => (
+                                        <Option key={option.CategoryName} value={option.CategoryName} style={{fontFamily:'Kalam'}}>
+                                        {option.CategoryName}
+                                        </Option>
+                                    ))}
+                                    </Select>
+                                </Form.Item>
+
+
+                                <Divider orientation="left" style={{ color: 'blue', borderColor: 'blue', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                    Price Adjustment Section
+                                </Divider>
+
 
                                 <Form.Item>
                                     <Button block type="primary" htmlType="submit">

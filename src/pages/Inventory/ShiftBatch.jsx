@@ -1,16 +1,17 @@
-import { Layout, theme, Breadcrumb, Spin } from "antd";
+import { Layout, theme, Breadcrumb, Spin, Space, Input, Select, notification, Modal, Avatar } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, CheckCircleTwoTone} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, CheckCircleTwoTone, SearchOutlined, ReconciliationFilled} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
 import ShiftBatchCard from "../../components/Inventory/ShiftBatchCard";
-
+import { useNavigate } from "react-router-dom";
 
 function ShiftBatch(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const pid = location.state.pid;
     const productName = location.state.productName;
@@ -37,14 +38,17 @@ function ShiftBatch(){
     };
 
 
-    //* Set inventory list
+
     const [batchList, setBatchList] = useState([]);
+    const [showBatchList, setShowBatchList] = useState([]);
     const [loading, setLoading] = useState(false); 
     const [shiftBatchList, setShiftBatchList] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [inventoryList, setInventoryList] = useState([]);
+    const [selectedInventory, setSelectedInventory] = useState("default");
 
 
-
-    //* Fetch Inventory List
+   
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
@@ -65,7 +69,32 @@ function ShiftBatch(){
                 receivedData = await response.json();
                 setLoading(false);
                 setBatchList(receivedData);
+                setShowBatchList(receivedData);
+            }
+            catch(error){
+                console.log("Error");
+            }
+
+
+
+            setLoading(true);
+            data = {
+                manufacturerId: manufacturerId
+            }
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/inventory/inventoryList', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+                });
+        
+                receivedData = await response.json();
+                setLoading(false);
+                setInventoryList(receivedData);
                 console.log(receivedData);
+                
             }
             catch(error){
                 console.log("Error");
@@ -76,20 +105,154 @@ function ShiftBatch(){
       }, []); 
 
 
+      const handleInventoryChange = async(value) => {
+        setSelectedInventory(value);
 
+    }
 
-      const addToBatchList = (bid) => {
+      const addToBatchList = async(bid) => {
             setShiftBatchList([...shiftBatchList, bid]);
       }
 
 
-      const removeFromBatchList = (bid) => {
+      const removeFromBatchList = async(bid) => {
             setShiftBatchList(shiftBatchList.filter((batch) => batch != bid));
       }
+
+
+    //* Handle batch search
+    const handleBatchSearch = (e) => {
+        const searchbid = e.target.value;
+        console.log(batchList);
+
+
+        let filtered = {
+            batches: []
+        };
+        setShowBatchList(filtered);
+
+        if(batchList != undefined && batchList.length != 0){
+            //* Filter batch list
+            for(let i=0; i<batchList.batches.length; i++) {
+                if(batchList.batches[i].bid.includes(searchbid)){
+                    filtered.batches.push(batchList.batches[i]);
+                }
+            }
+            setShowBatchList(filtered);
+        }
+    };
+
+
+    const showModal = () => {
+        if(shiftBatchList.length == 0){
+
+            notification.error({
+                message: `No batch selected`,
+                duration: 2, //? Duration in seconds
+            });
+            return;
+        }
+        setModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setModalVisible(false);
+    };
+
+    const handleOk = async() => {
+        
+        let data = {
+            fromIID: iid,
+            toIID: selectedInventory,
+            bid: shiftBatchList
+        }
+
+        let response,receivedData;
+        try{
+            response = await fetch(import.meta.env.VITE_API_URL+'/inventory/shiftProducts', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+            });
+    
+            receivedData = await response.json();
+            if(response.status == 200){
+                notification.success({
+                    message: `Batch shifted successfully`,
+                    duration: 1, //? Duration in seconds
+                    onClose: () => {
+                        console.log("Closed");
+                        window.location.reload(true);
+                        
+                    },
+                });
+                setModalVisible(false);
+                
+            }
+            else{
+                notification.error({
+                    message: `Error in shifting batch`,
+                    duration: 2, //? Duration in seconds
+                });
+                setModalVisible(false);
+            }
+        }
+        catch(error){
+            console.log("Error");
+        }
+        
+    };
 
     
     return (
         <div>
+
+
+        <Modal
+        title={
+        <div style={{ fontSize: '30px', fontFamily: 'Kalam', textAlign: 'center', color:'blue' }}>
+            Select Inventory To Shift
+        </div>}     
+        open={modalVisible}
+        onCancel={handleCancel}
+        onOk={handleOk}
+        style={{fontFamily: 'Kalam'}}
+        >
+            
+            <div style={{display:'flex',justifyContent:'center', flexDirection: 'column', alignItems: 'center'}}>
+                <div>
+                    <Avatar icon={<ReconciliationFilled />} size={100} style={{color:'blue' ,marginRight: '10px' }} />
+                </div>
+                <div >
+                    <p>
+                        
+                    </p>
+                </div>
+                    
+                
+                <div style={{ display:'flex', justifyContent:'center', width:'100%', justifySelf:'right'}}>
+                    <Select defaultValue="default" onChange={handleInventoryChange} style={{fontFamily:'Kalam', border: '2px solid blue', borderRadius: '8px', width:'80%'}}>
+                        <Select.Option value="default"  disabled key={"a"}>Select Inventory</Select.Option>
+                        {
+                            (inventoryList != undefined && inventoryList.length != 0) &&
+                            inventoryList.inventories.map((inventory, index) => {
+                                return(
+
+                                    inventory.iid != iid ? <Select.Option value={inventory.iid} style={{fontFamily:'Kalam'}} key={index}>{inventory.InventoryName}</Select.Option> : null
+
+                                )
+                            }
+                            )
+                        }
+                    </Select>
+                </div>
+               
+            </div>
+        </Modal>
+
+
             <Layout>
 
                
@@ -206,12 +369,37 @@ function ShiftBatch(){
 
                             <div style={{display:'flex', justifyContent:'center'}}>
                                 <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Select Batches:</p>
-                                <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                <div onClick={showModal} style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
                                     <div style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
                                         <CheckCircleTwoTone  style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Confirm Shift</p>
                                     </div>
                                 </div>
+                            </div>
+
+
+                            <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'left'}}>
+                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'left'}}>
+                                        <Input
+                                            placeholder="Enter Batch ID"
+                                            style={{
+                                                display:'flex',
+                                                borderRadius: '8px', // Set the border radius for rounded corners
+                                                border: '2px solid blue', // Set the blue-colored border
+                                                fontFamily:'Kalam',
+                                                width:'80%'
+                                            }}
+                                            prefix={
+                                                <Space>
+                                                  <SearchOutlined style={{ color: 'blue' }} />
+                                                </Space>
+                                            }
+                                            onChange={handleBatchSearch}
+                                        />
+                                    </div>
+                                    <div style={{flex:'1'}}>
+
+                                    </div>
                             </div>
 
                             {/* //*Loading effect while  */  }
@@ -224,18 +412,18 @@ function ShiftBatch(){
                             }
                         
                             {
-                                (batchList != undefined && batchList.length != 0) && batchList.batches.map((batch, index) => {
+                                (showBatchList != undefined && showBatchList.length != 0) && showBatchList.batches.map((batch, index) => {
                                    
                                        return(
-                                        <ShiftBatchCard key = {index} value={{
+                                        <ShiftBatchCard key = {batch.bid} value={{
                                             batch : batch,
                                             addToBatchList : addToBatchList,
                                             removeFromBatchList : removeFromBatchList,
+                                            selectedStatus : shiftBatchList.includes(batch.bid)
                                         }} />
+                                        
                                        );
                                         // console.log(product.Product);
-                                    
-                                    
                                 })
                             }
                             
