@@ -17,7 +17,7 @@ import ProductionHouseShowBatch from './pages/ProductionHouse/ProductionHouseSho
 import OrderManagement from './pages/Order/OrderManagement'
 import OrderDispatch from './pages/Order/OrderDispatch'
 import ShiftBatch from './pages/Inventory/ShiftBatch'
-
+import ProductionHouseShiftBatch from './pages/ProductionHouse/ProductionHouseShiftBatch'
 
 function App() {
 
@@ -47,6 +47,7 @@ function App() {
             <Route path="man/productionHouseList" element={<ProductionHouseList />} />
             <Route path="man/productionHouseList/showProduct" element={<ProductionHouseShowProduct />} />
             <Route path="man/productionHouseList/showProduct/showBatch" element={<ProductionHouseShowBatch />} />
+            <Route path="man/productionHouseList/showProduct/showBatch/shiftBatch" element={<ProductionHouseShiftBatch />} />
           </Routes>
         </Router>
     </div>

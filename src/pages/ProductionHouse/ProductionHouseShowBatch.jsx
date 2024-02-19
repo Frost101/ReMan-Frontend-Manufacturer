@@ -2,15 +2,16 @@ import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, ShoppingCartOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
 import BatchesInProductionHouseCard from "../../components/ProductionHouse/BatchesInProductionHouseCard";
-
+import { useNavigate } from "react-router-dom";
 
 function ProductionHouseShowBatch(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const pid = location.state.pid;
     const productName = location.state.productName;
@@ -73,6 +74,24 @@ function ProductionHouseShowBatch(){
     
         fetchData();
       }, []); 
+
+
+
+
+      const goToShiftBatch = (batchId) => {
+        navigate("/man/productionHouseList/showProduct/showBatch/shiftBatch", {state: 
+            {
+                manufacturerId:manufacturerId,
+                manufacturerName:manufacturerName,
+                manufacturerLogo:manufacturerLogo,
+                pid:pid,
+                productName:productName,
+                phid:phid,
+                productionHouseName:productionHouseName,      
+            }
+            
+        })
+  }
 
     
     return (
@@ -169,7 +188,16 @@ function ProductionHouseShowBatch(){
                                 </p>
                             </div>
 
-                            <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Batches in {productionHouseName} :</p>
+
+                            <div style={{display:'flex', justifyContent:'center'}}>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Batches in {productionHouseName}:</p>
+                                <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                    <div onClick={goToShiftBatch} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
+                                        <ShoppingCartOutlined style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Shift Product</p>
+                                    </div>
+                                </div>
+                            </div>
 
                              {/* //*Loading effect   */  }
                              {
