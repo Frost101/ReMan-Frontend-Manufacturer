@@ -1,15 +1,15 @@
-import { Layout, theme, Breadcrumb,InputNumber, Spin, Space, Input, Select, notification, Modal, Avatar, Button } from "antd";
+import { Layout, theme, Breadcrumb, Spin, Space, Input, Select, notification, Modal, Avatar } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, CheckCircleTwoTone, SearchOutlined, ReconciliationFilled, PlusOutlined, MinusOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, CheckCircleTwoTone, SearchOutlined,  ShopTwoTone } from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
 import ShiftBatchCard from "../../components/Inventory/ShiftBatchCard";
 import { useNavigate } from "react-router-dom";
 
-function BatchSale(){
+function AddToMarketPlace(){
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -44,8 +44,7 @@ function BatchSale(){
     const [loading, setLoading] = useState(false); 
     const [shiftBatchList, setShiftBatchList] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [value, setValue] = useState(0);
-    const [filter, setFilter] = useState('all');
+
 
    
     let response,receivedData;
@@ -73,13 +72,11 @@ function BatchSale(){
             catch(error){
                 console.log("Error");
             }
+
         };
     
         fetchData();
       }, []); 
-
-
-      
 
 
       const addToBatchList = async(bid) => {
@@ -95,6 +92,7 @@ function BatchSale(){
     //* Handle batch search
     const handleBatchSearch = (e) => {
         const searchbid = e.target.value;
+        console.log(batchList);
 
 
         let filtered = {
@@ -106,19 +104,7 @@ function BatchSale(){
             //* Filter batch list
             for(let i=0; i<batchList.batches.length; i++) {
                 if(batchList.batches[i].bid.includes(searchbid)){
-                    if(filter == 'all'){
-                        filtered.batches.push(batchList.batches[i]);
-                    }
-                    else if(filter == 'onSale'){
-                        if(batchList.batches[i].Sale != 0){
-                            filtered.batches.push(batchList.batches[i]);
-                        }
-                    }
-                    else if(filter == 'notInSale'){
-                        if(batchList.batches[i].Sale == 0){
-                            filtered.batches.push(batchList.batches[i]);
-                        }
-                    }
+                    filtered.batches.push(batchList.batches[i]);
                 }
             }
             setShowBatchList(filtered);
@@ -145,13 +131,12 @@ function BatchSale(){
     const handleOk = async() => {
         
         let data = {
-            Sale: value,
             bid: shiftBatchList
         }
 
         let response,receivedData;
         try{
-            response = await fetch(import.meta.env.VITE_API_URL+'/batch/provideSaleOnBatches', {
+            response = await fetch(import.meta.env.VITE_API_URL+'/batch/addToMarket', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -162,7 +147,7 @@ function BatchSale(){
             receivedData = await response.json();
             if(response.status == 200){
                 notification.success({
-                    message: `Discount added successfully!`,
+                    message: `Successfully added batch to marketplace`,
                     duration: 1, //? Duration in seconds
                     onClose: () => {
                         console.log("Closed");
@@ -175,7 +160,7 @@ function BatchSale(){
             }
             else{
                 notification.error({
-                    message: `Error in shifting batch`,
+                    message: `Error in adding batch to marketplace`,
                     duration: 2, //? Duration in seconds
                 });
                 setModalVisible(false);
@@ -187,48 +172,6 @@ function BatchSale(){
         
     };
 
-    const handleDecrease = () => {
-        if (value > 0) {
-          setValue(value - 0.1);
-        }
-    };
-    
-    const handleIncrease = () => {
-        if (value < 100) {
-          setValue(value + 0.1);
-        }
-    };
-
-    const setSelectedFilter = (value) => {
-        setFilter(value);
-        
-        let filtered = {
-            batches: []
-        };
-        setShowBatchList(filtered);
-
-        if(batchList != undefined && batchList.length != 0){
-            //* Filter batch list
-            for(let i=0; i<batchList.batches.length; i++) {
-                
-                if(value == 'all'){
-                    filtered.batches.push(batchList.batches[i]);
-                }
-                else if(value == 'onSale'){
-                    if(batchList.batches[i].Sale != 0){
-                        filtered.batches.push(batchList.batches[i]);
-                    }
-                }
-                else if(value == 'notInSale'){
-                    if(batchList.batches[i].Sale == 0){
-                        filtered.batches.push(batchList.batches[i]);
-                    }
-                }
-                
-            }
-            setShowBatchList(filtered);
-        } 
-    }
     
     return (
         <div>
@@ -237,7 +180,7 @@ function BatchSale(){
         <Modal
         title={
         <div style={{ fontSize: '30px', fontFamily: 'Kalam', textAlign: 'center', color:'blue' }}>
-            Enter Discount Rate
+            Confirm Adding to Marketplace
         </div>}     
         open={modalVisible}
         onCancel={handleCancel}
@@ -247,15 +190,14 @@ function BatchSale(){
             
             <div style={{display:'flex',justifyContent:'center', flexDirection: 'column', alignItems: 'center'}}>
                 <div>
-                    <Avatar icon={<ReconciliationFilled />} size={100} style={{color:'blue' ,marginRight: '10px' }} />
+                    <Avatar icon={<ShopTwoTone />} size={100} style={{color:'blue' ,marginRight: '10px' }} />
                 </div>
-                <div >
                 <div style={{
                     flex: '1',
                     paddingRight: '10px', // Add some padding to avoid horizontal scrollbar
                     fontFamily: 'Kalam',
                     }}>
-                        Discount will be added for the following batches: <br />
+                        Following batches will be added to the marketplace: <br />
                         {shiftBatchList.map((batch, index) => {
                             return(
                                 <p key={index} style={{fontFamily:'Kalam', fontSize:'15px', color:'red'}}>{batch}</p>
@@ -263,21 +205,6 @@ function BatchSale(){
                         }
                         )}
                 </div>
-                </div>
-                    
-                
-                <div style={{ display:'flex', justifyContent:'center', width:'100%', justifySelf:'right'}}>
-                <Button icon={<MinusOutlined />} onClick={handleDecrease} style={{border: '1px solid blue', borderRadius: '8px'}}/>
-                        <InputNumber
-                            value={value}
-                            onChange={(newValue) => setValue(newValue)}
-                            min={0}
-                            max={100}
-                            style={{border: '1px solid blue', borderRadius: '8px'}}
-                        />
-                    <Button icon={<PlusOutlined />} onClick={handleIncrease} style={{border: '1px solid blue', borderRadius: '8px'}}/>
-                </div>
-               
             </div>
         </Modal>
 
@@ -333,7 +260,7 @@ function BatchSale(){
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory </p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Product</p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Batch</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Sale</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Add to Marketplace</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -367,7 +294,6 @@ function BatchSale(){
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
                                 
                                 <p style={{flex:'1', color: '#001529', fontSize: '30px', fontFamily: 'Kalam', textAlign:'left' }}>
-
                                     {inventoryName} <br></br>
                                     <img
                                     src="https://pngimg.com/d/gift_PNG100238.png"
@@ -402,7 +328,7 @@ function BatchSale(){
                                 <div onClick={showModal} style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
                                     <div style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
                                         <CheckCircleTwoTone  style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Give Sale/Discount </p>
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Confirm Adding to Marketplace</p>
                                     </div>
                                 </div>
                             </div>
@@ -427,16 +353,12 @@ function BatchSale(){
                                             onChange={handleBatchSearch}
                                         />
                                     </div>
-                                    <div style={{flex:'1', textAlign:'right', fontFamily:'Kalam'}}>
-                                        <Select defaultValue="all" onChange={setSelectedFilter} style={{fontFamily:'Kalam', border: '2px solid blue', borderRadius: '8px', width:'80%'}}>
-                                            <Select.Option value="all"   key={"0"}>All batches</Select.Option>
-                                            <Select.Option value="onSale"   key={"1"}>On Sale</Select.Option>
-                                            <Select.Option value="notInSale"   key={"2"}>Not In Sale</Select.Option>
-                                        </Select>
+                                    <div style={{flex:'1'}}>
+
                                     </div>
                             </div>
 
-                            {/* //*Loading effect while  */  }
+
                             {
                                 loading &&
                                 <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
@@ -449,6 +371,8 @@ function BatchSale(){
                                 (showBatchList != undefined && showBatchList.length != 0) && showBatchList.batches.map((batch, index) => {
                                    
                                        return(
+
+                                        batch.MarketStatus ? null : 
                                         <ShiftBatchCard key = {batch.bid} value={{
                                             batch : batch,
                                             addToBatchList : addToBatchList,
@@ -457,7 +381,6 @@ function BatchSale(){
                                         }} />
                                         
                                        );
-                                        // console.log(product.Product);
                                 })
                             }
                             
@@ -473,4 +396,4 @@ function BatchSale(){
     )
 }
 
-export default BatchSale;
+export default AddToMarketPlace;

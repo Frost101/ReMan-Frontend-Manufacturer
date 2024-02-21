@@ -19,6 +19,8 @@ import OrderDispatch from './pages/Order/OrderDispatch'
 import ShiftBatch from './pages/Inventory/ShiftBatch'
 import ProductionHouseShiftBatch from './pages/ProductionHouse/ProductionHouseShiftBatch'
 import BatchSale from './pages/Inventory/BatchSale'
+import AddToMarketPlace from './pages/Inventory/AddToMarketPlace'
+import RemoveFromMarketPlace from './pages/Inventory/RemoveFromMarketPlace'
 
 function App() {
 
@@ -39,6 +41,8 @@ function App() {
             <Route path="man/inventoryList/showProduct/shiftBatch" element={<ShiftBatch />} />
             <Route path="man/inventoryList/showProduct/showBatch" element={<InventoryShowBatch />} />
             <Route path="man/inventoryList/showProduct/showBatch/sale" element={<BatchSale />} />
+            <Route path="man/inventoryList/showProduct/showBatch/addToMarketPlace" element={<AddToMarketPlace />} />
+            <Route path="man/inventoryList/showProduct/showBatch/removeFromMarketPlace" element={<RemoveFromMarketPlace />} />
 
             <Route path="man/orderManagement" element={<OrderManagement />} />
             <Route path="man/orderManagement/dispatch" element={<OrderDispatch />} />

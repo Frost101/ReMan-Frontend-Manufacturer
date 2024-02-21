@@ -2,7 +2,7 @@ import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, TagsOutlined, ShoppingCartOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, TagsOutlined, ShoppingCartOutlined, MinusCircleTwoTone, PlusCircleTwoTone} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
@@ -107,6 +107,34 @@ function InventoryShowBatch(){
 
             }}
             );   
+      }
+
+      const goToAddToMarketplace = () => {
+            navigate("/man/inventoryList/showProduct/showBatch/addToMarketPlace",{
+                state: {
+                    manufacturerId:manufacturerId,
+                    manufacturerName:manufacturerName,
+                    manufacturerLogo:manufacturerLogo,
+                    pid:pid,
+                    productName:productName,
+                    iid:iid,
+                    inventoryName:inventoryName,
+                }
+            });
+      }
+
+      const goToRemoveFromMarketplace = () => {
+            navigate("/man/inventoryList/showProduct/showBatch/removeFromMarketPlace",{
+                state: {
+                    manufacturerId:manufacturerId,
+                    manufacturerName:manufacturerName,
+                    manufacturerLogo:manufacturerLogo,
+                    pid:pid,
+                    productName:productName,
+                    iid:iid,
+                    inventoryName:inventoryName,
+                }
+            });
       }
 
     
@@ -215,6 +243,17 @@ function InventoryShowBatch(){
                                     <div onClick={goToBatchSale} style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
                                         <TagsOutlined style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Offer Sale/Discount</p>
+                                    </div>
+
+
+                                    <div onClick={goToAddToMarketplace} style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
+                                        <PlusCircleTwoTone style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Add to Marketplace</p>
+                                    </div>
+
+                                    <div onClick={goToRemoveFromMarketplace} style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
+                                        <MinusCircleTwoTone  style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Remove From Marketplace</p>
                                     </div>
                                 </div>
                             </div>
