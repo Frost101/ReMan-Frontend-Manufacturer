@@ -159,7 +159,7 @@ const BatchesInInventoryCard = (props) => {
                         </>):
                         (
                         <>
-                            batch.Sale
+                            &nbsp; {batch.Sale} % discount
                             <div
                             style={{
                                 width: '10px',

@@ -93,6 +93,22 @@ function InventoryShowBatch(){
             })
       }
 
+
+      const goToBatchSale = () => {
+           navigate("/man/inventoryList/showProduct/showBatch/sale", {state:
+            {
+                manufacturerId:manufacturerId,
+                manufacturerName:manufacturerName,
+                manufacturerLogo:manufacturerLogo,
+                pid:pid,
+                productName:productName,
+                iid:iid,
+                inventoryName:inventoryName,
+
+            }}
+            );   
+      }
+
     
     return (
         <div>
@@ -196,7 +212,7 @@ function InventoryShowBatch(){
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Shift Product</p>
                                     </div>
 
-                                    <div style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
+                                    <div onClick={goToBatchSale} style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
                                         <TagsOutlined style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Offer Sale/Discount</p>
                                     </div>
