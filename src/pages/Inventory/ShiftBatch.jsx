@@ -226,9 +226,19 @@ function ShiftBatch(){
                     <Avatar icon={<ReconciliationFilled />} size={100} style={{color:'blue' ,marginRight: '10px' }} />
                 </div>
                 <div >
-                    <p>
-                        
-                    </p>
+                <div style={{
+                    flex: '1',
+                    paddingRight: '10px', // Add some padding to avoid horizontal scrollbar
+                    fontFamily: 'Kalam',
+                    }}>
+                        Following batches will be shifted <br />
+                        {shiftBatchList.map((batch, index) => {
+                            return(
+                                <p key={index} style={{fontFamily:'Kalam', fontSize:'15px', color:'red'}}>{batch}</p>
+                            );
+                        }
+                        )}
+                </div>
                 </div>
                     
                 
