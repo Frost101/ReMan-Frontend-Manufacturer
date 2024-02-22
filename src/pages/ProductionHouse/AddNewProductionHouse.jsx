@@ -30,7 +30,7 @@ import {
 import { storage } from "../../firebase";
 import {v4} from 'uuid';
 
-function AddNewProduct(){
+function AddNewProductionHouse(){
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -114,20 +114,6 @@ function AddNewProduct(){
         imgWindow?.document.write(image.outerHTML);
       };
 
-      const uploadImages = async () => {
-        let urls = [];
-        fileList.map(async (file) => {
-            const storageRef = ref(storage, `images/${v4()}`);
-            await uploadBytes(storageRef, file.originFileObj).then((snapshot) => {
-                console.log('Uploaded a blob or file!');
-                getDownloadURL(snapshot.ref).then((url) => {
-                    urls.push(url);
-                });
-            });
-        });
-        setImageUrls(urls);
-      }
-
       const onFinish = async (values) => { 
 
         if(fileList.length === 0){
@@ -140,77 +126,76 @@ function AddNewProduct(){
 
         //* Upload images to firebase storage
         let urls = [];
-
         await Promise.all(
-        fileList.map(async (file) => {
-            const storageRef = ref(storage, `images/${manufacturerName}/products/${values.ProductName}/${v4()}`);
-            await uploadBytes(storageRef, file.originFileObj).then((snapshot) => {
-                console.log('Uploaded a blob or file!');
-                getDownloadURL(snapshot.ref).then((url) => {
+            fileList.map(async (file) => {
+                const storageRef = ref(storage, `images/${manufacturerName}/ProductionHouse/${values.ProductionHouseName}/${v4()}`);
+                
+                try {
+                    const snapshot = await uploadBytes(storageRef, file.originFileObj);
+                    console.log('Uploaded a blob or file!');
+                    
+                    const url = await getDownloadURL(snapshot.ref);
                     urls.push(url);
-                });
-            });
-        })
+                } catch (error) {
+                    console.error('Error uploading or getting URL:', error);
+                }
+            })
         );
         setImageUrls(urls);
 
-         //* Add image urls to the values object
-        values.Image = urls;
+        values.Image = urls[0];
 
         console.log('Received values:', values);
 
-
-        let response,receivedData;
         let data = {
-            MID: manufacturerId,
-            ProductName: values.ProductName,
-            Description: values.Description,
-            CategoryName: values.CategoryName,
-            Weight_Volume: values.Weight_Volume,
-            Unit: values.Unit,
-            UnitPrice: values.UnitPrice,
-            MinQuantityForSale: values.MinQuantityForSale,
-            MinQuantityForDiscount: values.MinQuantityForDiscount,
-            MinimumDiscount: values.MinimumDiscount,
-            MaximumDiscount: values.MaximumDiscount,
-            DiscountRate: values.DiscountRate,
-            ProductQuantityForDiscountRate: values.ProductQuantityForDiscountRate,
-            MinimumDeliveryCharge: values.MinimumDeliveryCharge,
-            DeliveryChargeIncreaseRate: values.DeliveryChargeIncreaseRate,
+            MID : manufacturerId,
+            ProductionHouseName: values.ProductionHouseName,
+            Details: values.Details,
+            ProductionHouseType: values.ProductionHouseType,
+            Capacity: values.Capacity,
+            HouseNumber: values.HouseNumber,
+            Street: values.Street,
+            ZIP: values.ZIP,
+            Thana: values.Thana,
+            Division: values.Division,
+            AddressDetails: values.AddressDetails,
             Image: values.Image
         }
+
+        let response, receivedData;
         try{
-            response = await fetch(import.meta.env.VITE_API_URL+'/products/newProduct', {
+            response = await fetch(import.meta.env.VITE_API_URL+'/productionhouse/addProductionHouse', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
             });
-
+    
             receivedData = await response.json();
+            console.log(receivedData);
             if(response.status === 201){
                 notification.success({
-                    message: `Product Added Successfully`,
+                    message: `Production House Added Successfully`,
                     duration: 1, //? Duration in seconds
                     onClose: () => {
                         window.location.reload(true);
-                        
-                    },
+                    }
                 });
             }
             else{
-                console.log(response.status);
+                notification.error({
+                    message: `Error Adding Production House`,
+                    duration: 1, //? Duration in seconds
+                });
             }
         }
         catch(error){
             console.log("Error");
         }
+
       };
 
-      
-
-      console.log(imageUrls);
 
     return (
         <div>
@@ -262,7 +247,7 @@ function AddNewProduct(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Product List</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Add new</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
@@ -298,7 +283,7 @@ function AddNewProduct(){
                             }}
                             >
                             <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
-                                Add A New Product
+                                Add A New Production House
                             </p>
 
                             <div style={{
@@ -319,24 +304,24 @@ function AddNewProduct(){
                                  >
 
                                 <Divider orientation="left" style={{ width:'80%', color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
-                                    Product Details Section
+                                    Production House Description Section
                                 </Divider>
 
-                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>ProductName:</h3>
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Production House Name:</h3>
                                 <Form.Item
-                                    name="ProductName"
+                                    name="ProductionHouseName"
                                     rules= {[
                                         {
                                             required: true,
                                             message:
-                                                'Enter a valid product name!',
+                                                'Enter a valid production House name!',
                                         },
                                     ]}
                                     hasFeedback
                                     style={{textAlign:'center'}}
                                 >
                                     <Input 
-                                        placeholder='abc Juice'
+                                        placeholder='Enter production house name: (Ex: prodhouse1)'
                                         maxLength={30}
                                         showCount
                                         allowClear
@@ -351,16 +336,17 @@ function AddNewProduct(){
                                     />
                                 </Form.Item>
 
-                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Product Description:</h3>
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Description:</h3>
                                 <Form.Item
-                                    name="Description"
+                                    name="Details"
                                     type="text"
-                                    rules={[{ required: true, message: 'Enter a valid product description!' }]}
+                                    rules={[{ required: true, message: 'Enter a valid description!' }]}
                                     style={{textAlign:'center'}}
                                 >
                       
                                     <Input.TextArea
                                     allowClear
+                                    placeholder="Example: Crafting a fusion of crispy chips and refreshing juices for a delightful snacking experience"
                                     style={{
                                         width: '80%',
                                         margin: 'auto',
@@ -373,74 +359,74 @@ function AddNewProduct(){
                                     />
                                 </Form.Item>
 
-                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Product Category:</h3>
+
+
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Production House Type:</h3>
                                 <Form.Item
-                                    name="CategoryName"
-                                    rules={[{ required: true, message: 'Please select an option' }]}
-                                    style={{textAlign:'center',
-                                }}
+                                    name="ProductionHouseType"
+                                    rules= {[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Enter a valid production house type!',
+                                        },
+                                    ]}
+                                    hasFeedback
+                                    style={{textAlign:'center'}}
                                 >
-                                    <Select
-                                    showSearch
-                                    style={{
-                                        width: '80%',
+                                    <Input 
+                                        placeholder='Example: Chips, Juices, Snacks'
+                                        maxLength={50}
+                                        showCount
+                                        allowClear
+                                        style={{
+                                            width: '80%',
+                                            margin: 'auto',
+                                            border: '2px solid blue',    // Set the border color to blue
+                                            borderRadius: '8px',        // Set border-radius for rounded corners
+                                            padding: '8px',             // Add padding for better appearance
+                                            boxSizing: 'border-box',     // Include padding and border in the total width
+                                          }}
+                                    />
+                                </Form.Item>
+
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Size(In sqft):</h3>
+                                <Form.Item
+                                    name="Capacity"
+                                    style={{paddingLeft:'10%'}}
+                                    rules={[
+                                    { required: true, message: 'Please enter the size in sqft' },
+                                    { type: 'number', message: 'Please enter a valid number' }
+                                    ]}
+                                >
+                                    <InputNumber
+                                    min={0}
+                                    style={{ 
+                                        width: '89%',
                                         margin: 'auto',
-                                        border: '2px solid blue', // Blue border color
-                                         borderRadius: '8px', // Rounded corners
-                                      }}
-                                    placeholder="Type here...."
-                                    optionFilterProp="children"
-                                    filterOption={(inputValue, option) =>
-                                        option.children.toLowerCase().includes(inputValue.toLowerCase())
-                                    }
-                                    dropdownStyle={{ maxHeight: 200, overflowY: 'auto' }} 
-                                    >
-                                    {categoryList.map((option) => (
-                                        <Option key={option.CategoryName} value={option.CategoryName} style={{fontFamily:'Kalam'}}>
-                                        {option.CategoryName}
-                                        </Option>
-                                    ))}
-                                    </Select>
+                                        border: '2px solid blue',    // Set the border color to blue
+                                        borderRadius: '8px',        // Set border-radius for rounded corners
+                                        paddingLeft: '5px',             // Add padding for better appearance
+                                        boxSizing: 'border-box',     // Include padding and border in the total width
+                                        }}
+                                    placeholder="weight/volume"
+                                    step={1} 
+                                    />
                                 </Form.Item>
 
 
-
                                 <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
-                                    Weight & Price Adjustment Section
+                                    Address Section
                                 </Divider>
 
                                 <div style={{width: '100%', display: 'flex', flexDirection:'column' ,justifyContent: 'center', alignItems: 'center' }}>
                                     <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
                                         <div style={{flex:'1', textAlign:'left' }}>
-                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Weight/Volume:</h3>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>House Number :</h3>
                                             <Form.Item
-                                                name="Weight_Volume"
+                                                name="HouseNumber"
                                                 rules={[
-                                                { required: true, message: 'Please enter the weight/volume' },
-                                                { type: 'number', message: 'Please enter a valid number' }
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="weight/volume"
-                                                step={1} 
-                                                />
-                                            </Form.Item>
-                                        </div>
-
-                                        <div style={{flex:'1', textAlign:'right'}}>
-                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Unit:</h3>
-                                            <Form.Item
-                                                name="Unit"
-                                                rules={[
-                                                { required: true, message: 'Please enter a valid unit' },
-                                                { type: 'text', message: 'Please enter a valid unit' },
+                                                { required: true, message: 'Please enter a valid House Number' },
                                                 ]}
                                             >
                                                 <Input
@@ -450,7 +436,28 @@ function AddNewProduct(){
                                                     border: '2px solid blue', // Blue border color
                                                     borderRadius: '8px', // Rounded corners
                                                  }}
-                                                placeholder="Kg/Litre"
+                                                placeholder="Ex:A-121"
+                                                />
+                                            </Form.Item>
+                                        </div>
+
+                                        <div style={{flex:'1', textAlign:'right'}}>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Street Name:</h3>
+                                            <Form.Item
+                                                name="Street"
+                                                rules={[
+                                                { required: true, message: 'Please enter a valid street name' },
+                                                { type: 'text', message: 'Please enter a valid street name' },
+                                                ]}
+                                            >
+                                                <Input
+                                                style={{ 
+                                                    width: '80%',
+                                                    margin: 'auto',
+                                                    border: '2px solid blue', // Blue border color
+                                                    borderRadius: '8px', // Rounded corners
+                                                 }}
+                                                placeholder="Ex: Rankin Street"
                                                 />
                                             </Form.Item>
                                         </div>
@@ -460,12 +467,12 @@ function AddNewProduct(){
 
                                     <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
                                         <div style={{flex:'1', textAlign:'left', }}>
-                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Unit Price:</h3>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>ZIP Code:</h3>
                                             <Form.Item
-                                                name="UnitPrice"
+                                                name="ZIP"
                                                 rules={[
-                                                { required: true, message: 'Please enter the unit price' },
-                                                { type: 'number', message: 'Please enter a valid number' },
+                                                { required: true, message: 'Please enter the valid ZIP Code' },
+                                                { type: 'number', message: 'Please enter a valid ZIP Code' },
                                                 ]}
                                             >
                                                 <InputNumber
@@ -476,8 +483,7 @@ function AddNewProduct(){
                                                     border: '2px solid blue', // Blue border color
                                                     borderRadius: '8px', // Rounded corners
                                                  }}
-                                                placeholder="Price in taka"
-                                                step={1} 
+                                                placeholder="Ex:6000"
                                                 />
                                             </Form.Item>
                                         </div>
@@ -494,205 +500,68 @@ function AddNewProduct(){
 
                                     <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
                                         <div style={{flex:'1', textAlign:'left' }}>
-                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Minimum Quantity For Sale:</h3>
+                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Thana:</h3>
                                             <Form.Item
-                                                name="MinQuantityForSale"
+                                                name="Thana"
                                                 rules={[
-                                                { required: true, message: 'Please enter the unit price' },
-                                                { type: 'number', message: 'Please enter a valid number' },
+                                                { required: true, message: 'Please enter a valid Thana Name' },
                                                 ]}
                                             >
-                                                <InputNumber
-                                                min={0}
+                                                <Input
                                                 style={{ 
                                                     width: '80%',
                                                     margin: 'auto',
                                                     border: '2px solid blue', // Blue border color
                                                     borderRadius: '8px', // Rounded corners
                                                  }}
-                                                placeholder="Ex:100"
-                                                step={1} 
+                                                placeholder="Ex:Rajpara"
                                                 />
                                             </Form.Item>
                                         </div>
 
                                         <div style={{flex:'1', textAlign:'right'}}>
-                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Minimum Quantity For Discount:</h3>
+                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Division:</h3>
                                             <Form.Item
-                                                name="MinQuantityForDiscount"
+                                                name="Division"
                                                 rules={[
-                                                { required: true, message: 'Please enter minimum Quantity For Discount' },
-                                                { type: 'number', message: 'Please enter a valid number' },
+                                                { required: true, message: 'Please enter a valid Division' },
                                                 ]}
                                             >
-                                                <InputNumber
-                                                min={0}
+                                                <Input
                                                 style={{ 
                                                     width: '80%',
                                                     margin: 'auto',
                                                     border: '2px solid blue', // Blue border color
                                                     borderRadius: '8px', // Rounded corners
                                                  }}
-                                                placeholder="Ex:200"
-                                                step={1}
+                                                placeholder="Ex:Rajshahi"
                                                 />
                                             </Form.Item>
                                         </div>
                                     </div>
 
-
-
-                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
-                                        <div style={{flex:'1', textAlign:'left' }}>
-                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Minimum Discount Rate(in %):</h3>
-                                            <Form.Item
-                                                name="MinimumDiscount"
-                                                rules={[
-                                                { required: true, message: 'Please enter the minimum discount' },
-                                                { type: 'number', message: 'Please enter a valid number' },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="Ex:10.5"
-                                                step={0.1} 
-                                                />
-                                            </Form.Item>
-                                        </div>
-
-                                        <div style={{flex:'1', textAlign:'right'}}>
-                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Maximum Discount(in %):</h3>
-                                            <Form.Item
-                                                name="MaximumDiscount"
-                                                rules={[
-                                                { required: true, message: 'Please enter maximum Quantity For Discount' },
-                                                { type: 'number', message: 'Please enter a valid number' },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="Ex:20.5"
-                                                step={0.1}
-                                                />
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-
-
-
-
-                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
-                                        <div style={{flex:'1', textAlign:'left' }}>
-                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Discount Rate Increment(in %):</h3>
-                                            <Form.Item
-                                                name="DiscountRate"
-                                                rules={[
-                                                { required: true, message: 'Please enter the discount rate increment' },
-                                                { type: 'number', message: 'Please enter a valid number' },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="Ex:0.1"
-                                                step={0.1} 
-                                                />
-                                            </Form.Item>
-                                        </div>
-
-                                        <div style={{flex:'1', textAlign:'right'}}>
-                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Product Quantity for discount increment:</h3>
-                                            <Form.Item
-                                                name="ProductQuantityForDiscountRate"
-                                                rules={[
-                                                { required: true, message: 'Please enter maximum Quantity For Discount' },
-                                                { type: 'number', message: 'Please enter a valid number' },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="Ex:50"
-                                                step={1}
-                                                />
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-                                    
-
-
-
-
-                                    <div style={{display:'flex', width:'80%',justifyContent:'center',alignItems:'center' }}>
-                                        <div style={{flex:'1', textAlign:'left' }}>
-                                            <h3 style={{fontFamily:'Kalam', alignContent:'left'}}>Minimum Delivery Charge(in taka):</h3>
-                                            <Form.Item
-                                                name="MinimumDeliveryCharge"
-                                                rules={[
-                                                { required: true, message: 'Please enter the minimum delivery charge' },
-                                                { type: 'number', message: 'Please enter a valid number' },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="Ex:10"
-                                                step={1} 
-                                                />
-                                            </Form.Item>
-                                        </div>
-
-                                        <div style={{flex:'1', textAlign:'right'}}>
-                                            <h3 style={{fontFamily:'Kalam', textAlign:'left', paddingLeft:'20%'}}>Delivery Charge Increment Rate per product:</h3>
-                                            <Form.Item
-                                                name="DeliveryChargeIncreaseRate"
-                                                rules={[
-                                                { required: true, message: 'Please enter maximum Quantity For Discount' },
-                                                { type: 'number', message: 'Please enter a valid number' },
-                                                ]}
-                                            >
-                                                <InputNumber
-                                                min={0}
-                                                style={{ 
-                                                    width: '80%',
-                                                    margin: 'auto',
-                                                    border: '2px solid blue', // Blue border color
-                                                    borderRadius: '8px', // Rounded corners
-                                                 }}
-                                                placeholder="Ex:0.5"
-                                                step={0.1}
-                                                />
-                                            </Form.Item>
-                                        </div>
-                                    </div>
-
+                                    <h3 style={{fontFamily:'Kalam'}}>Address Details:</h3>
+                                    <Form.Item
+                                        name="AddressDetails"
+                                        type="text"
+                                        rules={[{ required: true, message: 'Enter Valid Address details!' }]}
+                                        style={{textAlign:'center', width:'100%'}}
+                                    >
+                        
+                                        <Input.TextArea
+                                        allowClear
+                                        placeholder="Example: Near the jame mosjid"
+                                        style={{
+                                            width: '80%',
+                                            margin: 'auto',
+                                            border: '2px solid blue',    // Set the border color to blue
+                                            borderRadius: '8px',        // Set border-radius for rounded corners
+                                            padding: '8px',             // Add padding for better appearance
+                                            boxSizing: 'border-box',     // Include padding and border in the total width
+                                        }}
+                                        rows={4}
+                                        />
+                                    </Form.Item>
 
                                 </div>
 
@@ -701,8 +570,7 @@ function AddNewProduct(){
                                 </Divider>
 
 
-                                <h3 style={{fontFamily:'Kalam', textAlign:'center'}}>Upload Product Images:</h3>
-                                <p style={{fontFamily:'Kalam', textAlign:'center', color:'red'}}>[Please Note that the first image will be selected as the primary image]</p>
+                                <h3 style={{fontFamily:'Kalam', textAlign:'center'}}>Upload Production House Image:</h3>
                                 <div style={{display:'flex', textAlign:'center'}}>
                                     <ImgCrop rotationSlider>
                                         <Upload
@@ -713,16 +581,16 @@ function AddNewProduct(){
                                             onPreview={onPreview}
                                             preventDefault={false}
                                         >
-                                            {fileList.length < 5 && '+ Upload'}
+                                            {fileList.length < 1 && '+ Upload'}
                                         </Upload>
                                     </ImgCrop>
                                 </div>
-                                {/* <Button onClick={uploadImages}>Upload</Button> */}
+                              
 
-
+                                
                                 <Form.Item>
                                     <Button block type="primary" htmlType="submit" style={{width:'100%', fontFamily:'Kalam', textAlign:'center'}}>
-                                     Add Product
+                                     Add Production House
                                     </Button>
                                 </Form.Item>
                             </Form>
@@ -747,4 +615,4 @@ function AddNewProduct(){
     )
 }
 
-export default AddNewProduct;
+export default AddNewProductionHouse;
