@@ -2,7 +2,7 @@ import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, ShoppingCartOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, ShoppingCartOutlined, PlusCircleTwoTone} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
@@ -91,7 +91,22 @@ function ProductionHouseShowBatch(){
             }
             
         })
-  }
+    }
+
+
+    const goToAddNewBatch = () => {
+        navigate("/man/productionHouseList/showProduct/showBatch/addNewBatch",{
+            state: {
+                manufacturerId:manufacturerId,
+                manufacturerName:manufacturerName,
+                manufacturerLogo:manufacturerLogo,
+                pid:pid,
+                productName:productName,
+                phid:phid,
+                productionHouseName:productionHouseName,      
+            }
+        })
+    }
 
     
     return (
@@ -192,6 +207,10 @@ function ProductionHouseShowBatch(){
                             <div style={{display:'flex', justifyContent:'center'}}>
                                 <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Batches in {productionHouseName}:</p>
                                 <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                    <div onClick={goToAddNewBatch} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
+                                        <PlusCircleTwoTone  style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Batch</p>
+                                    </div>
                                     <div onClick={goToShiftBatch} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
                                         <ShoppingCartOutlined style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Shift Product</p>
