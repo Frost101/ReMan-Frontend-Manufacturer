@@ -22,6 +22,7 @@ import BatchSale from './pages/Inventory/BatchSale'
 import AddToMarketPlace from './pages/Inventory/AddToMarketPlace'
 import RemoveFromMarketPlace from './pages/Inventory/RemoveFromMarketPlace'
 import AddNewBatch from './pages/ProductionHouse/AddNewBatch'
+import AddNewProductionHouse from './pages/ProductionHouse/AddNewProductionHouse'
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
           
             <Route path="man/productionHouseList" element={<ProductionHouseList />} />
             <Route path="man/productionHouseList/showProduct" element={<ProductionHouseShowProduct />} />
+            <Route path="man/productionHouseList/addNewProductionHouse" element={<AddNewProductionHouse />} />
             <Route path="man/productionHouseList/showProduct/showBatch" element={<ProductionHouseShowBatch />} />
             <Route path="man/productionHouseList/showProduct/showBatch/shiftBatch" element={<ProductionHouseShiftBatch />} />
             <Route path='man/productionHouseList/showProduct/showBatch/addNewBatch' element={<AddNewBatch />} />
