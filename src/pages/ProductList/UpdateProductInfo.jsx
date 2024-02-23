@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb, Upload, Button, Form,Cascader,
+import { Layout, theme, Breadcrumb, Upload, Button, Form,Cascader,Spin,
     DatePicker,
     Input,
     InputNumber,
@@ -30,13 +30,15 @@ import {
 import { storage } from "../../firebase";
 import {v4} from 'uuid';
 
-function AddNewProduct(){
+function UpdateProductInfo(){
     const location = useLocation();
     const navigate = useNavigate();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
+    const pid = location.state.pid;
+    const productName = location.state.productName;
     
     //* Menu Collapse
     const [collapsed, setCollapsed] = useState(false);
@@ -55,38 +57,89 @@ function AddNewProduct(){
     };
 
 
-    //* Set inventory list
-    const [inventoryList, setInventoryList] = useState([]);
+    const [productInfo, setProductInfo] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
 
 
-    //* Fetch Inventory List
+    
     useEffect(() => {
         const fetchData = async () => {
-            let response;
-            let receivedData;
+            let response,receivedData;
+            setLoading(true);
+
+            let data = {
+                pid: pid
+            }
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/productDetails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+                });
+        
+                receivedData = await response.json();
+                console.log(receivedData);
+                setLoading(false);
+                setProductInfo(receivedData.productInfo);
+
+                //* Set the fileList
+                let fileListTmp = [];
+                let urlsTmp = [];
+                fileListTmp.push({
+                    uid: '1',
+                    name: 'image1.png',
+                    status: 'uploaded',
+                    url: receivedData.productInfo.Image,
+                });
+                urlsTmp.push(receivedData.productInfo.Image);
+                receivedData.productInfo.OtherImages.map((url, index) => {
+                    fileListTmp.push({
+                        uid: (index+2),
+                        name: 'image' + (index+2) +'.png',
+                        status: 'uploaded',
+                        url: url,
+                    });
+                    urlsTmp.push(url);
+                });
+                setFileList(fileListTmp);
+                setImageUrls(urlsTmp);
+                
+            }
+            catch(error){
+                console.log("Error");
+            }
+
+
+
+            setLoading(true);
+            //* Fetch Category List
             try{
                 response = await fetch(import.meta.env.VITE_API_URL+'/products/allCategories', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
-                },
+                }
                 });
         
                 receivedData = await response.json();
-                setCategoryList(receivedData.categories);
                 console.log(receivedData);
+                setLoading(false);
+                setCategoryList(receivedData.categories);
+                
             }
             catch(error){
                 console.log("Error");
             }
+
         };
     
         fetchData();
       }, []); 
-
 
 
       
@@ -96,7 +149,7 @@ function AddNewProduct(){
         setFileList(newFileList);
       };
 
-      console.log(fileList);
+      console.log("FileList: ",fileList);
 
 
       const onPreview = async (file) => {
@@ -113,6 +166,35 @@ function AddNewProduct(){
         const imgWindow = window.open(src);
         imgWindow?.document.write(image.outerHTML);
       };
+
+
+      const onRemove = async (file) => {
+
+            imageUrls.map((url, index) => {
+                if(url === file.url){
+                    imageUrls.splice(index, 1);
+                }
+            });
+            if(file.status != undefined && file.status === 'uploaded'){
+                let src = file.url;
+                try {
+                    const storage = getStorage();
+        
+                    const desertRef = ref(storage, src);
+                   
+                    deleteObject(desertRef).then(() => {
+                       
+                        console.log('File deleted successfully');
+                    }).catch((error) => {
+                        // Uh-oh, an error occurred!
+                        console.log('Uh-oh, an error occurred!');
+                    });
+                  } catch (error) {
+                    console.error('Error deleting image:', error.message);
+                  }
+            }
+      }
+
 
       const uploadImages = async () => {
         let urls = [];
@@ -140,27 +222,29 @@ function AddNewProduct(){
 
         //* Upload images to firebase storage
         let urls = [];
+        urls =  urls.concat(imageUrls);
 
         await Promise.all(
         fileList.map(async (file) => {
-            const storageRef = ref(storage, `images/${manufacturerName}/products/${values.ProductName}/${v4()}`);
-            const snapshot = await uploadBytes(storageRef, file.originFileObj);
-            console.log('Uploaded a blob or file!');
+
+            if(file.status != 'uploaded'){
+                const storageRef = ref(storage, `images/${manufacturerName}/products/${values.ProductName}/${v4()}`);
+                const snapshot = await uploadBytes(storageRef, file.originFileObj);
+                console.log('Uploaded a blob or file!');
+                
+                const url = await getDownloadURL(snapshot.ref);
+                urls.push(url);
+            }
             
-            const url = await getDownloadURL(snapshot.ref);
-            urls.push(url);
         })
         );
         setImageUrls(urls);
 
-         //* Add image urls to the values object
-        values.Image = urls;
-
-        console.log('Received values:', values);
-
+    
 
         let response,receivedData;
         let data = {
+            PID: pid,
             MID: manufacturerId,
             ProductName: values.ProductName,
             Description: values.Description,
@@ -176,35 +260,45 @@ function AddNewProduct(){
             ProductQuantityForDiscountRate: values.ProductQuantityForDiscountRate,
             MinimumDeliveryCharge: values.MinimumDeliveryCharge,
             DeliveryChargeIncreaseRate: values.DeliveryChargeIncreaseRate,
-            Image: values.Image
+            Image: urls,
         }
+
+        console.log(data);
+
+        let bodyt = await JSON.stringify(data);
+        
         try{
-            response = await fetch(import.meta.env.VITE_API_URL+'/products/newProduct', {
-            method: 'POST',
+
+            response = await fetch(import.meta.env.VITE_API_URL+'/products/productUpdate', {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
-            });
-
-            receivedData = await response.json();
-            if(response.status === 201){
+            body: bodyt
+            })
+            
+            
+            if(response.status === 200){
                 notification.success({
-                    message: `Product Added Successfully`,
-                    duration: 1, //? Duration in seconds
+                    message: `Product Info Updated Successfully`,
+                    duration: 1, //? Duration in sec
                     onClose: () => {
-                        window.location.reload(true);
-                        
-                    },
+                        window.location.reload();
+                    }
                 });
             }
             else{
-                console.log(response.status);
+                notification.error({
+                    message: `Product Info Update Failed`,
+                    duration: 1, //? Duration in seconds
+                });
             }
         }
         catch(error){
-            console.log("Error");
+            console.log(error);
         }
+       
+        
       };
 
       
@@ -296,9 +390,18 @@ function AddNewProduct(){
                                 justifyContent: 'flex-start',  
                             }}
                             >
-                            <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
-                                Add A New Product
-                            </p>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
+                                
+                                <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
+                                <span style={{  fontSize: '30px', fontFamily: 'Kalam', textAlign: 'center', color:'purple' }}> Update Product Info </span> <br></br>
+                                    <img
+                                    src="https://pngimg.com/d/gift_PNG100238.png"
+                                    alt="Avatar"
+                                    style={{ marginRight: '10px', width: '50px', height: '50px' }}
+                                    />
+                                    {productName}
+                                </p>
+                            </div>
 
                             <div style={{
                                 display: 'flex',
@@ -306,10 +409,44 @@ function AddNewProduct(){
                                 alignItems: 'center',
                                 width: '100%',
                             }}>
+
+                                
+                            {/* //*Loading effect   */  }
+                             {
+                                loading &&
+                                <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
+                                    <Spin spinning={loading} size="large">
+                                    </Spin>
+                                </div>
+                            }
+
+                            
+
+                            {
+                                productInfo != undefined && productInfo.length != 0 &&
                                 <Form
                                 name="login-form"
                                 labelCol={{span:8}}
-                                initialValues={{  }}
+                                initialValues={
+                                    {
+                                        MID: manufacturerId,
+                                        PID: pid,
+                                        ProductName: productInfo.ProductName,
+                                        Description: productInfo.Description,
+                                        CategoryName: productInfo.CategoryName,
+                                        Weight_Volume: productInfo.Weight_volume,
+                                        Unit: productInfo.Unit,
+                                        UnitPrice: productInfo.UnitPrice,
+                                        MinQuantityForSale: productInfo.MinQuantityForSale,
+                                        MinQuantityForDiscount: productInfo.MinQuantityForDiscount,
+                                        MinimumDiscount: productInfo.MinimumDiscount,
+                                        MaximumDiscount: productInfo.MaximumDiscount,
+                                        DiscountRate: productInfo.DiscountRate,
+                                        ProductQuantityForDiscountRate: productInfo.ProductQuantityForDiscountRate,
+                                        MinimumDeliveryCharge: productInfo.MinimumDeliveryCharge,
+                                        DeliveryChargeIncreaseRate: productInfo.DeliveryChargeIncreaseRate,
+                                    }
+                                }
                                 onFinish={onFinish}
                                 style={{
                                     padding: '16px',          // Add padding for better appearance
@@ -324,6 +461,7 @@ function AddNewProduct(){
                                 <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>ProductName:</h3>
                                 <Form.Item
                                     name="ProductName"
+                                    
                                     rules= {[
                                         {
                                             required: true,
@@ -334,8 +472,7 @@ function AddNewProduct(){
                                     hasFeedback
                                     style={{textAlign:'center'}}
                                 >
-                                    <Input 
-                                        placeholder='abc Juice'
+                                    <Input  
                                         maxLength={30}
                                         showCount
                                         allowClear
@@ -359,6 +496,7 @@ function AddNewProduct(){
                                 >
                       
                                     <Input.TextArea
+                                
                                     allowClear
                                     style={{
                                         width: '80%',
@@ -698,6 +836,10 @@ function AddNewProduct(){
                                 <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
                                     Image Upload Section
                                 </Divider>
+                                
+
+
+
 
 
                                 <h3 style={{fontFamily:'Kalam', textAlign:'center'}}>Upload Product Images:</h3>
@@ -710,6 +852,7 @@ function AddNewProduct(){
                                             fileList={fileList}
                                             onChange={onChange}
                                             onPreview={onPreview}
+                                            onRemove={onRemove}
                                             preventDefault={false}
                                         >
                                             {fileList.length < 5 && '+ Upload'}
@@ -725,6 +868,9 @@ function AddNewProduct(){
                                     </Button>
                                 </Form.Item>
                             </Form>
+
+
+                            }
                             </div>
 
                             
@@ -746,4 +892,4 @@ function AddNewProduct(){
     )
 }
 
-export default AddNewProduct;
+export default UpdateProductInfo;

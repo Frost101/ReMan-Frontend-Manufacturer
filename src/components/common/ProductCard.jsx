@@ -2,16 +2,38 @@
 import { BankOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { Card, Avatar} from 'antd';
+import { useNavigate } from 'react-router-dom';
 const { Meta } = Card;
 
 
 const ProductCard = (props) => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const onChange = (checked) => {
     setLoading(!checked);
   };
 
-  let product = props.product;
+  let product = props.values.product;
+  let manufacturerId = props.values.manufacturerId;
+  let manufacturerName = props.values.manufacturerName;
+  let manufacturerLogo = props.values.manufacturerLogo;
+
+
+  const goToProductDetails = () => {
+    navigate("/man/productList/productDetails",
+    {
+      state: { 
+        pid: product.pid,
+        productName: product.ProductName,
+        manufacturerId: manufacturerId,
+        manufacturerName: manufacturerName,
+        manufacturerLogo: manufacturerLogo
+      }
+    }
+    )
+  }
+
   return (
     <>
       
@@ -32,6 +54,7 @@ const ProductCard = (props) => {
             e.currentTarget.style.backgroundColor = ''; // Revert to the original background color on hover out
             e.currentTarget.style.transform = 'scale(1,1)';
         }}
+        onClick={goToProductDetails}
       >
         <Meta
           avatar={<Avatar src="https://pngimg.com/d/gift_PNG100238.png" size={50} style={{ marginRight: '10px' }} /> } 

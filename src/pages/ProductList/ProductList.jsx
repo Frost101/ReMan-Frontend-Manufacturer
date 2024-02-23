@@ -180,21 +180,12 @@ function ProductList(){
                             <div style={{display:'flex', justifyContent:'center'}}>
                                 <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Categories and Products:</p>
                                 <div style={{flex:'1', display:'flex', justifyContent:'center', justifySelf:'right'}}>
+
                                     <div onClick={addProduct} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
                                         <PlusCircleFilled style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Product</p>
                                     </div>
-
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
-                                        <CheckCircleFilled style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px'}}>Update Product Details</p>
-                                    </div>
-
-                                    <div  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
-                                        <MinusCircleFilled  style={{cursor: 'pointer', fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
-                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center', marginLeft: '30px' }}>Remove Product</p>
-                                    </div>
-                                   
+                
                                 </div>
                             </div>
 
@@ -223,7 +214,15 @@ function ProductList(){
                                                 {
                                                     ( productList != undefined && productList.length != 0) && productList.products.map((product, index) => {
                                                         return (
-                                                                (product.CategoryName == category.CategoryName) && (<ProductCard key = {index} product={product} />) 
+                                                                (product.CategoryName == category.CategoryName) && (<ProductCard key = {index} values={
+                                                                    {
+                                                                        product: product,
+                                                                        manufacturerId: manufacturerId,
+                                                                        manufacturerName: manufacturerName,
+                                                                        manufacturerLogo: manufacturerLogo
+                                                                    }
+                                                                } 
+                                                                />) 
 
                                                                 );
                                                     })

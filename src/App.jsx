@@ -24,6 +24,8 @@ import RemoveFromMarketPlace from './pages/Inventory/RemoveFromMarketPlace'
 import AddNewBatch from './pages/ProductionHouse/AddNewBatch'
 import AddNewProductionHouse from './pages/ProductionHouse/AddNewProductionHouse'
 import AddNewInventory from './pages/Inventory/AddNewInventory'
+import ProductDetails from './pages/ProductList/ProductDetails'
+import UpdateProductInfo from './pages/ProductList/UpdateProductInfo'
 
 function App() {
 
@@ -57,8 +59,10 @@ function App() {
 
             <Route path="man/productList" element={<ProductList />} />
             <Route path="man/productList/newProduct" element={<AddNewProduct />} />
+            <Route path="man/productList/productDetails" element={<ProductDetails />} />
+            <Route path="man/productList/productDetails/updateProductInfo" element={<UpdateProductInfo />} />
 
-          
+
             <Route path="man/productionHouseList" element={<ProductionHouseList />} />
             <Route path="man/productionHouseList/showProduct" element={<ProductionHouseShowProduct />} />
             <Route path="man/productionHouseList/addNewProductionHouse" element={<AddNewProductionHouse />} />
