@@ -2,14 +2,15 @@ import { Layout, theme, Breadcrumb, Spin } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, PlusCircleTwoTone} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import InventoryCard from "../../components/common/InventoryCard";
 import CustomFooter from "../../components/CustomFooter";
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 function InventoryList(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
@@ -68,6 +69,12 @@ function InventoryList(){
     
         fetchData();
       }, []); 
+
+
+
+      const goToAddNewInventory = () => {
+            navigate("/man/inventoryList/addNewInventory", {state: {manufacturerId: manufacturerId, manufacturerName: manufacturerName, manufacturerLogo: manufacturerLogo}});
+      }
 
 
     return (
@@ -150,7 +157,15 @@ function InventoryList(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}>My Inventories:</p>
+                             <div style={{display:'flex', justifyContent:'center'}}>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>My Inventories:</p>
+                                <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                    <div onClick={goToAddNewInventory} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
+                                        <PlusCircleTwoTone  style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
+                                        <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Inventory</p>
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* //*Loading effect   */  }
                             {

@@ -23,6 +23,7 @@ import AddToMarketPlace from './pages/Inventory/AddToMarketPlace'
 import RemoveFromMarketPlace from './pages/Inventory/RemoveFromMarketPlace'
 import AddNewBatch from './pages/ProductionHouse/AddNewBatch'
 import AddNewProductionHouse from './pages/ProductionHouse/AddNewProductionHouse'
+import AddNewInventory from './pages/Inventory/AddNewInventory'
 
 function App() {
 
@@ -35,22 +36,28 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing_page />} />
             <Route path="/signin" element={<SignIn />} />
-            
+
+
             <Route path="/man/home" element={<HomePage />} />
+
 
             <Route path="man/inventoryList" element={<InventoryList />} />
             <Route path="man/inventoryList/showProduct" element={<InventoryShowProduct />} />
+            <Route path="man/inventoryList/addNewInventory" element={<AddNewInventory />} />
             <Route path="man/inventoryList/showProduct/shiftBatch" element={<ShiftBatch />} />
             <Route path="man/inventoryList/showProduct/showBatch" element={<InventoryShowBatch />} />
             <Route path="man/inventoryList/showProduct/showBatch/sale" element={<BatchSale />} />
             <Route path="man/inventoryList/showProduct/showBatch/addToMarketPlace" element={<AddToMarketPlace />} />
             <Route path="man/inventoryList/showProduct/showBatch/removeFromMarketPlace" element={<RemoveFromMarketPlace />} />
 
+
             <Route path="man/orderManagement" element={<OrderManagement />} />
             <Route path="man/orderManagement/dispatch" element={<OrderDispatch />} />
 
+
             <Route path="man/productList" element={<ProductList />} />
             <Route path="man/productList/newProduct" element={<AddNewProduct />} />
+
           
             <Route path="man/productionHouseList" element={<ProductionHouseList />} />
             <Route path="man/productionHouseList/showProduct" element={<ProductionHouseShowProduct />} />

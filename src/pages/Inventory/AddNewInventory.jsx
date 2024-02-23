@@ -30,7 +30,7 @@ import {
 import { storage } from "../../firebase";
 import {v4} from 'uuid';
 
-function AddNewProductionHouse(){
+function AddNewInventory(){
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -55,14 +55,13 @@ function AddNewProductionHouse(){
     };
 
 
-   
 
     const [fileList, setFileList] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
     
 
 
-   
+    
     useEffect(() => {
         const fetchData = async () => {
             
@@ -112,7 +111,7 @@ function AddNewProductionHouse(){
         let urls = [];
         await Promise.all(
             fileList.map(async (file) => {
-                const storageRef = ref(storage, `images/${manufacturerName}/ProductionHouse/${values.ProductionHouseName}/${v4()}`);
+                const storageRef = ref(storage, `images/${manufacturerName}/Inventory/${values.InventoryName}/${v4()}`);
                 
                 try {
                     const snapshot = await uploadBytes(storageRef, file.originFileObj);
@@ -133,9 +132,9 @@ function AddNewProductionHouse(){
 
         let data = {
             MID : manufacturerId,
-            ProductionHouseName: values.ProductionHouseName,
+            InventoryName: values.InventoryName,
             Details: values.Details,
-            ProductionHouseType: values.ProductionHouseType,
+            InventoryType: values.InventoryType,
             Capacity: values.Capacity,
             HouseNumber: values.HouseNumber,
             Street: values.Street,
@@ -148,7 +147,7 @@ function AddNewProductionHouse(){
 
         let response, receivedData;
         try{
-            response = await fetch(import.meta.env.VITE_API_URL+'/productionhouse/addProductionHouse', {
+            response = await fetch(import.meta.env.VITE_API_URL+'/inventory/addInventory', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -160,7 +159,7 @@ function AddNewProductionHouse(){
             console.log(receivedData);
             if(response.status === 201){
                 notification.success({
-                    message: `Production House Added Successfully`,
+                    message: `Inventory Added Successfully`,
                     duration: 1, //? Duration in seconds
                     onClose: () => {
                         window.location.reload(true);
@@ -169,7 +168,7 @@ function AddNewProductionHouse(){
             }
             else{
                 notification.error({
-                    message: `Error Adding Production House`,
+                    message: `Error in Adding Inventory`,
                     duration: 1, //? Duration in seconds
                 });
             }
@@ -231,7 +230,7 @@ function AddNewProductionHouse(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Production House</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory</p></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Add new</p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
@@ -267,7 +266,7 @@ function AddNewProductionHouse(){
                             }}
                             >
                             <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
-                                Add A New Production House
+                                Add A New Inventory
                             </p>
 
                             <div style={{
@@ -288,24 +287,24 @@ function AddNewProductionHouse(){
                                  >
 
                                 <Divider orientation="left" style={{ width:'80%', color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
-                                    Production House Description Section
+                                    Inventory Description Section
                                 </Divider>
 
-                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Production House Name:</h3>
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Inventory Name:</h3>
                                 <Form.Item
-                                    name="ProductionHouseName"
+                                    name="InventoryName"
                                     rules= {[
                                         {
                                             required: true,
                                             message:
-                                                'Enter a valid production House name!',
+                                                'Enter a valid inventory name!',
                                         },
                                     ]}
                                     hasFeedback
                                     style={{textAlign:'center'}}
                                 >
                                     <Input 
-                                        placeholder='Enter production house name: (Ex: prodhouse1)'
+                                        placeholder='Enter inventory name: (Ex: inventory1)'
                                         maxLength={30}
                                         showCount
                                         allowClear
@@ -330,7 +329,7 @@ function AddNewProductionHouse(){
                       
                                     <Input.TextArea
                                     allowClear
-                                    placeholder="Example: Crafting a fusion of crispy chips and refreshing juices for a delightful snacking experience"
+                                    placeholder="Example: Fresh Food Storage"
                                     style={{
                                         width: '80%',
                                         margin: 'auto',
@@ -345,22 +344,22 @@ function AddNewProductionHouse(){
 
 
 
-                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Production House Type:</h3>
+                                <h3 style={{fontFamily:'Kalam', alignContent:'left', paddingLeft:'10%'}}>Inventory Type:</h3>
                                 <Form.Item
-                                    name="ProductionHouseType"
+                                    name="InventoryType"
                                     rules= {[
                                         {
                                             required: true,
                                             message:
-                                                'Enter a valid production house type!',
+                                                'Enter a valid inventory type!',
                                         },
                                     ]}
                                     hasFeedback
                                     style={{textAlign:'center'}}
                                 >
                                     <Input 
-                                        placeholder='Example: Chips, Juices, Snacks'
-                                        maxLength={50}
+                                        placeholder='Example: Cold Storage'
+                                        maxLength={30}
                                         showCount
                                         allowClear
                                         style={{
@@ -554,7 +553,7 @@ function AddNewProductionHouse(){
                                 </Divider>
 
 
-                                <h3 style={{fontFamily:'Kalam', textAlign:'center'}}>Upload Production House Image:</h3>
+                                <h3 style={{fontFamily:'Kalam', textAlign:'center'}}>Upload Inventory Image:</h3>
                                 <div style={{display:'flex', textAlign:'center'}}>
                                     <ImgCrop rotationSlider>
                                         <Upload
@@ -574,7 +573,7 @@ function AddNewProductionHouse(){
                                 
                                 <Form.Item>
                                     <Button block type="primary" htmlType="submit" style={{width:'100%', fontFamily:'Kalam', textAlign:'center'}}>
-                                     Add Production House
+                                     Add Inventory
                                     </Button>
                                 </Form.Item>
                             </Form>
@@ -599,4 +598,4 @@ function AddNewProductionHouse(){
     )
 }
 
-export default AddNewProductionHouse;
+export default AddNewInventory;
