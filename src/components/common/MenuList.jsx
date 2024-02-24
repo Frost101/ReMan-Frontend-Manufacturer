@@ -7,12 +7,14 @@ import {HomeOutlined,
         AreaChartOutlined,
         ShopOutlined,
         PoweroffOutlined,
-        DropboxOutlined
+        DropboxOutlined,
+        SettingOutlined
 } from '@ant-design/icons';
 
 import {useNavigate} from 'react-router-dom';
 
 import '../../assets/css/Sidebar.css';
+import LeaseManagement from '../../pages/LeaseManagement/LeaseManagement';
 
 const MenuList = (props) => {
 
@@ -47,6 +49,13 @@ const MenuList = (props) => {
                                                     manufacturerLogo: props.value.manufacturerLogo}});
     }
 
+
+    const goToLeaseManagementPage = () => {
+        navigate("/man/leaseManagement", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
     const signout = () => {
         navigate("/");
     }
@@ -70,6 +79,9 @@ const MenuList = (props) => {
             </Menu.Item>
             <Menu.Item key="products" icon={<DropboxOutlined />} onClick={goToProductListPage} className="menu-item">
                 Products
+            </Menu.Item>
+            <Menu.Item key="leaseManagement" icon={<SettingOutlined />} onClick={goToLeaseManagementPage} className="menu-item">
+                LeaseManagement
             </Menu.Item>
             <Menu.Item key="notification" icon={<NotificationOutlined />} className="menu-item">
                 Notification
