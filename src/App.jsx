@@ -26,6 +26,8 @@ import AddNewProductionHouse from './pages/ProductionHouse/AddNewProductionHouse
 import AddNewInventory from './pages/Inventory/AddNewInventory'
 import ProductDetails from './pages/ProductList/ProductDetails'
 import UpdateProductInfo from './pages/ProductList/UpdateProductInfo'
+import LeaseManagement from './pages/LeaseManagement/LeaseManagement'
+import GiveLease from './pages/LeaseManagement/GiveLease'
 
 function App() {
 
@@ -69,6 +71,10 @@ function App() {
             <Route path="man/productionHouseList/showProduct/showBatch" element={<ProductionHouseShowBatch />} />
             <Route path="man/productionHouseList/showProduct/showBatch/shiftBatch" element={<ProductionHouseShiftBatch />} />
             <Route path='man/productionHouseList/showProduct/showBatch/addNewBatch' element={<AddNewBatch />} />
+
+
+            <Route path="man/leaseManagement" element={<LeaseManagement />} />
+            <Route path="man/leaseManagement/giveLease" element={<GiveLease />} />
 
           </Routes>
         </Router>
