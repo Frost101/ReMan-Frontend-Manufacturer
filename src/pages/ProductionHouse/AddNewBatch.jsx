@@ -223,7 +223,7 @@ function AddNewBatch(){
                             <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center', paddingBottom:"0px", marginBottom:'0px' }}>
                                 Add A New Batch
                             </p>
-                            <span style={{ color: '#001529', fontSize: '30px', color:'purple', fontFamily: 'Kalam', textAlign: 'center' }}>
+                            <span style={{  fontSize: '30px', color:'purple', fontFamily: 'Kalam', textAlign: 'center' }}>
                                     <img
                                     src="https://pngimg.com/d/gift_PNG100238.png"
                                     alt="Avatar"

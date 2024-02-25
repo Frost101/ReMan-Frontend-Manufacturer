@@ -28,6 +28,8 @@ import ProductDetails from './pages/ProductList/ProductDetails'
 import UpdateProductInfo from './pages/ProductList/UpdateProductInfo'
 import LeaseManagement from './pages/LeaseManagement/LeaseManagement'
 import GiveLease from './pages/LeaseManagement/GiveLease'
+import InventoryMarketPlace from './pages/LeaseManagement/InventoryMarketPlace'
+import InventoryDetails from './pages/LeaseManagement/InventoryDetails'
 
 function App() {
 
@@ -75,6 +77,8 @@ function App() {
 
             <Route path="man/leaseManagement" element={<LeaseManagement />} />
             <Route path="man/leaseManagement/giveLease" element={<GiveLease />} />
+            <Route path="man/leaseManagement/inventoryMarketPlace" element={<InventoryMarketPlace />} />
+            <Route path="man/leaseManagement/inventoryMarketPlace/inventoryDetails" element={<InventoryDetails />} />
 
           </Routes>
         </Router>

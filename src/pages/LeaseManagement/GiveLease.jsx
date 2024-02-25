@@ -161,7 +161,7 @@ function GiveLease(){
         console.log('Success:', values);
         let data = {
             mid : manufacturerId,
-            iid : selectedInventoryIds[0],
+            iid : selectedInventoryIds,
             Duration : values.Duration,
             PerDayRent : values.PerDayRent,
             Details : values.Details
