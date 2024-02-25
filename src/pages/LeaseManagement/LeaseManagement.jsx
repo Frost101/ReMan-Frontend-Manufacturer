@@ -63,6 +63,19 @@ function LeaseManagement(){
       };
 
 
+      const goToInventoryMarketPlace = () => {
+        navigate("/man/leaseManagement/inventoryMarketPlace",
+        {
+            state: {
+                manufacturerId: manufacturerId,
+                manufacturerName: manufacturerName,
+                manufacturerLogo: manufacturerLogo
+            }
+        }       
+        )
+      };
+
+
 
 
 
@@ -179,6 +192,7 @@ function LeaseManagement(){
                             <div style={{display:'flex', justifyContent:'center'}}>
                                 <div style={{flex:1}}>
                                 <Card
+                                    onClick={goToInventoryMarketPlace}
                                     hoverable
                                     style={{
                                     width: 300,
