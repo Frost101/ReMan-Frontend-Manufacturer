@@ -8,7 +8,8 @@ import {HomeOutlined,
         ShopOutlined,
         PoweroffOutlined,
         DropboxOutlined,
-        SettingOutlined
+        SettingOutlined,
+        CreditCardOutlined
 } from '@ant-design/icons';
 
 import {useNavigate} from 'react-router-dom';
@@ -56,12 +57,21 @@ const MenuList = (props) => {
                                                     manufacturerLogo: props.value.manufacturerLogo}});
     }
 
+
+    const goToVoucherPage = () => {
+        navigate("/man/myVouchers", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
+
     const signout = () => {
         navigate("/");
     }
 
     return (
-        <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'} }>
+        <div style={{ overflowY:'auto'}}>
+        <Menu theme='dark' mode='inline' className='menu-bar' style={{fontFamily:'Kalam',fontSize:'15px'}}>
             <Menu.Item key="home" icon={<HomeOutlined />} onClick={goToHomePage} className="menu-item">
                 Home
             </Menu.Item>
@@ -83,6 +93,9 @@ const MenuList = (props) => {
             <Menu.Item key="leaseManagement" icon={<SettingOutlined />} onClick={goToLeaseManagementPage} className="menu-item">
                 LeaseManagement
             </Menu.Item>
+            <Menu.Item key="leaseManagement" icon={<CreditCardOutlined />} onClick={goToVoucherPage} className="menu-item">
+                Voucher
+            </Menu.Item>
             <Menu.Item key="notification" icon={<NotificationOutlined />} className="menu-item">
                 Notification
             </Menu.Item>
@@ -94,6 +107,7 @@ const MenuList = (props) => {
             </Menu.Item>
 
         </Menu>
+        </div>
     );
 }
 

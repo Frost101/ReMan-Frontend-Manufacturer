@@ -30,6 +30,9 @@ import LeaseManagement from './pages/LeaseManagement/LeaseManagement'
 import GiveLease from './pages/LeaseManagement/GiveLease'
 import InventoryMarketPlace from './pages/LeaseManagement/InventoryMarketPlace'
 import InventoryDetails from './pages/LeaseManagement/InventoryDetails'
+import MyVouchers from './pages/Vouchers/myVouchers'
+import AddNewVoucher from './pages/Vouchers/AddNewVoucher'
+import UpdateVoucher from './pages/Vouchers/UpdateNDeleteVouchers'
 
 function App() {
 
@@ -79,6 +82,10 @@ function App() {
             <Route path="man/leaseManagement/giveLease" element={<GiveLease />} />
             <Route path="man/leaseManagement/inventoryMarketPlace" element={<InventoryMarketPlace />} />
             <Route path="man/leaseManagement/inventoryMarketPlace/inventoryDetails" element={<InventoryDetails />} />
+
+            <Route path="man/myVouchers" element={<MyVouchers />} />
+            <Route path="man/myVouchers/addNew" element={<AddNewVoucher />} />
+            <Route path="man/myVouchers/update" element={<UpdateVoucher />} />
 
           </Routes>
         </Router>
