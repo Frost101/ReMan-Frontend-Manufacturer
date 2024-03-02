@@ -4,7 +4,6 @@ const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
 import { CodeSandboxCircleFilled, HomeOutlined, PlusCircleTwoTone, ShopOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
-import InventoryCard from "../../components/common/InventoryCard";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation, useNavigate} from 'react-router-dom';
 const { Meta } = Card;
@@ -76,6 +75,29 @@ function LeaseManagement(){
       };
 
 
+      const goToRentedInventories = () => {
+        navigate("/man/leaseManagement/rentedInventories",
+        {
+            state: {
+                manufacturerId: manufacturerId,
+                manufacturerName: manufacturerName,
+                manufacturerLogo: manufacturerLogo
+            }
+        }
+        )
+      }
+
+      const goToTakenInventoryPage = () =>{
+        navigate("/man/leaseManagement/takenInventories",
+        {
+            state: {
+                manufacturerId: manufacturerId,
+                manufacturerName: manufacturerName,
+                manufacturerLogo: manufacturerLogo
+            }
+        }        
+        )
+      }
 
 
 
@@ -195,7 +217,7 @@ function LeaseManagement(){
                                     onClick={goToInventoryMarketPlace}
                                     hoverable
                                     style={{
-                                    width: 300,
+                                    width: '90%',
                                     }}
                                     cover={
                                     <img
@@ -221,7 +243,7 @@ function LeaseManagement(){
                                     onClick={goToGiveLeasePage}
                                     hoverable
                                     style={{
-                                    width: 300,
+                                    width: '90%',
                                     }}
                                     cover={
                                     <img
@@ -245,9 +267,10 @@ function LeaseManagement(){
 
                                 <div style={{flex:1}}>
                                 <Card
+                                    onClick={goToRentedInventories}
                                     hoverable
                                     style={{
-                                    width: 300,
+                                    width: '90%',
                                     }}
                                     cover={
                                     <img
@@ -260,7 +283,7 @@ function LeaseManagement(){
                                     <Meta
                                     avatar={<ShopOutlined  style={{fontSize:'30px', color:'blue'}} />}
                                     style={{textAlign:'center', fontFamily:'Kalam'}}
-                                    title="Bought Inventories"
+                                    title="Rented Inventories"
                                     description="Here you can see the inventories you have bought"
                                     />
                                 </Card>
@@ -269,9 +292,10 @@ function LeaseManagement(){
 
                                 <div style={{flex:1}}>
                                 <Card
+                                    onClick={goToTakenInventoryPage}
                                     hoverable
                                     style={{
-                                    width: 300,
+                                    width: '90%',
                                     }}
                                     cover={
                                     <img
@@ -285,8 +309,8 @@ function LeaseManagement(){
                                     <Meta
                                     avatar={<ShopOutlined  style={{fontSize:'30px', color:'blue'}} />}
                                     style={{textAlign:'center', fontFamily:'Kalam'}}
-                                    title="Lease History"
-                                    description="Here you can see the history of the leases you have given and taken"
+                                    title="Taken Inventories & Reclaim"
+                                    description="Here you can see the inventories that others have taken from you and reclaim unleased inventories"
                                     />
                                 </Card>
                                 </div>
