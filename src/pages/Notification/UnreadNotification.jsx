@@ -66,7 +66,7 @@ function UnreadNotification(){
             manufacturerLogo: manufacturerLogo}});
     }
 
-    //* Fetch Order List
+   
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
