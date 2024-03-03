@@ -36,6 +36,7 @@ import UpdateVoucher from './pages/Vouchers/UpdateNDeleteVouchers'
 import RentedInventories from './pages/LeaseManagement/RentedInventories'
 import TakenInventories from './pages/LeaseManagement/TakenInventories'
 import ReclaimInventories from './pages/LeaseManagement/ReclaimInventories'
+import UnreadNotification from './pages/Notification/UnreadNotification'
 
 function App() {
 
@@ -92,6 +93,9 @@ function App() {
             <Route path="man/myVouchers" element={<MyVouchers />} />
             <Route path="man/myVouchers/addNew" element={<AddNewVoucher />} />
             <Route path="man/myVouchers/update" element={<UpdateVoucher />} />
+
+
+            <Route path="man/notification/unread" element={<UnreadNotification />} />
 
           </Routes>
         </Router>
