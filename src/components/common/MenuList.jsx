@@ -64,6 +64,12 @@ const MenuList = (props) => {
                                                     manufacturerLogo: props.value.manufacturerLogo}});
     }
 
+    const goToUnreadNotificationPage = () => {
+        navigate("/man/notification/unread", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
 
     const signout = () => {
         navigate("/");
@@ -96,7 +102,7 @@ const MenuList = (props) => {
             <Menu.Item key="leaseManagement" icon={<CreditCardOutlined />} onClick={goToVoucherPage} className="menu-item">
                 Voucher
             </Menu.Item>
-            <Menu.Item key="notification" icon={<NotificationOutlined />} className="menu-item">
+            <Menu.Item key="notification" icon={<NotificationOutlined />} onClick={goToUnreadNotificationPage} className="menu-item">
                 Notification
             </Menu.Item>
             <Menu.Item key="data" icon={<AreaChartOutlined />} className="menu-item">
