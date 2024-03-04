@@ -96,7 +96,7 @@ function InventoryDetails(){
             localStorage.setItem('manufacturerId', manufacturerId);
             localStorage.setItem('manufacturerLogo', manufacturerLogo);
             localStorage.setItem('manufacturerName',manufacturerName);
-            window.location.href(receivedData.url);
+            window.location.href=receivedData.url;
         } catch (err) {
             console.log(err);
         }

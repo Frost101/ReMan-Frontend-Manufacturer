@@ -78,7 +78,7 @@ const RentedInventoryCard = (props) => {
             localStorage.setItem('manufacturerId', manufacturerId);
             localStorage.setItem('manufacturerLogo',manufacturerLogo);
             localStorage.setItem('manufacturerName',manufacturerName);
-            window.location.href(receivedData.url);
+            window.location.href = receivedData.url;
         }
         catch(error){
             console.log("Error");
