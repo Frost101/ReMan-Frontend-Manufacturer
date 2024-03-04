@@ -11,6 +11,7 @@ import {HomeOutlined,
         SettingOutlined,
         CreditCardOutlined
 } from '@ant-design/icons';
+import { useState, useEffect, } from "react";
 
 import {useNavigate} from 'react-router-dom';
 
@@ -20,6 +21,39 @@ import LeaseManagement from '../../pages/LeaseManagement/LeaseManagement';
 const MenuList = (props) => {
 
     const navigate = useNavigate();
+    const [notification, setNotification] = useState([]);
+
+
+    let response,receivedData;
+    useEffect(() => {
+        const fetchData = async () => {
+
+           
+            let data = {
+                mid: props.value.manufacturerId
+            }
+
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/notification/unreadNotificationsManufacturer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                    });
+            
+                    receivedData = await response.json();
+                    setNotification(receivedData.notifications);
+            
+            }
+            catch(error){
+                console.log("Error while fetching notifications");
+            }
+
+        };
+    
+        fetchData();
+      }, []);
 
 
     //* Navigation
@@ -71,6 +105,20 @@ const MenuList = (props) => {
     }
 
 
+    const goToProfilePage = () => {
+        navigate("/man/profile", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+
+    }
+
+    const goToDataAnalyticsPage = () => {
+        navigate("/man/dataAnalytics", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
+
     const signout = () => {
         navigate("/");
     }
@@ -81,8 +129,14 @@ const MenuList = (props) => {
             <Menu.Item key="home" icon={<HomeOutlined />} onClick={goToHomePage} className="menu-item">
                 Home
             </Menu.Item>
-            <Menu.Item key="Profile" icon={<ProfileOutlined />} className="menu-item">
+            <Menu.Item onClick={goToProfilePage} key="Profile" icon={<ProfileOutlined />} className="menu-item">
                 Profile
+            </Menu.Item>
+            <Menu.Item key="notification" icon={<NotificationOutlined />} onClick={goToUnreadNotificationPage} className="menu-item">
+                Notification
+                {
+                    notification.length != 0 ? <span style={{color:'red',fontSize:'15px'}}>({notification.length})</span> : null
+                }
             </Menu.Item>
             <Menu.Item key="history" icon={<HistoryOutlined />} onClick={goToOrderManagementPage} className="menu-item">
                 Order Management
@@ -102,10 +156,7 @@ const MenuList = (props) => {
             <Menu.Item key="leaseManagement" icon={<CreditCardOutlined />} onClick={goToVoucherPage} className="menu-item">
                 Voucher
             </Menu.Item>
-            <Menu.Item key="notification" icon={<NotificationOutlined />} onClick={goToUnreadNotificationPage} className="menu-item">
-                Notification
-            </Menu.Item>
-            <Menu.Item key="data" icon={<AreaChartOutlined />} className="menu-item">
+            <Menu.Item onClick={goToDataAnalyticsPage} key="data" icon={<AreaChartOutlined />} className="menu-item">
                 Data Analytics
             </Menu.Item>
             <Menu.Item key="signout" icon={<PoweroffOutlined color='red' /> } className="menu-item" onClick={signout}>

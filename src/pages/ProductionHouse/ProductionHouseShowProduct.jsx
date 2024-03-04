@@ -1,12 +1,13 @@
-import { Layout, theme, Breadcrumb, Spin } from "antd";
+import { Layout, theme, Breadcrumb, Spin, List, Space, Input } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, SearchOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
 import ProductsInProductionHouseCard from "../../components/ProductionHouse/ProductsInProductionHouseCard";
+import ProductsInProductionHouseCard2 from "../../components/ProductionHouse/ProductsInProductionHouseCard2";
 
 function ProductionHouseShowProduct(){
     const location = useLocation();
@@ -37,6 +38,7 @@ function ProductionHouseShowProduct(){
 
     //* Set inventory list
     const [productList, setProductList] = useState([]);
+    const [showProductList, setShowProductList] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
@@ -61,7 +63,7 @@ function ProductionHouseShowProduct(){
                 receivedData = await response.json();
                 setLoading(false);
                 setProductList(receivedData);
-                console.log(receivedData);
+                setShowProductList(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -71,6 +73,14 @@ function ProductionHouseShowProduct(){
         fetchData();
       }, []); 
 
+      const handleProductSearch = (e) => {
+        let searchQuery = e.target.value;
+        let filteredProductList = productList.productsInProductionHouse.filter((product) => {
+            
+            return product.ProductName.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+        setShowProductList({productsInProductionHouse:filteredProductList});
+      }
     
     return (
         <div>
@@ -134,7 +144,7 @@ function ProductionHouseShowProduct(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -155,6 +165,26 @@ function ProductionHouseShowProduct(){
                         >
                              <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {productionHouseName} :</p>
 
+                             <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'left'}}>
+                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'left'}}>
+                                        <Input
+                                            placeholder="Enter product name"
+                                            style={{
+                                                display:'flex',
+                                                borderRadius: '8px', // Set the border radius for rounded corners
+                                                border: '2px solid blue', // Set the blue-colored border
+                                                fontFamily:'Kalam',
+                                                width:'50%'
+                                            }}
+                                            prefix={
+                                                <Space>
+                                                  <SearchOutlined style={{ color: 'blue' }} />
+                                                </Space>
+                                            }
+                                            onChange={handleProductSearch}
+                                        />
+                                    </div>
+                            </div>
 
                              {/* //*Loading effect   */  }
                              {
@@ -167,23 +197,39 @@ function ProductionHouseShowProduct(){
 
 
 
-                            {
-                                (productList != undefined && productList.length != 0) && productList.productsInProductionHouse.map((product, index) => {
-                                   
-                                       return(
-                                        <ProductsInProductionHouseCard key = {index} value={{
-                                            product: product,
-                                            manufacturerId : manufacturerId,
-                                            manufacturerName : manufacturerName,
-                                            manufacturerLogo : manufacturerLogo,
-                                            phid : phid,
-                                            productionHouseName : productionHouseName
-                                        }} />
-                                       );
-                                        // console.log(product.Product);
-                                    
-                                    
-                                })
+                            {                           
+                                (showProductList != undefined && showProductList.length != 0) &&
+                                <List>
+
+
+                                <List
+                                    grid={{
+                                        gutter: 16,
+                                        xs: 1,
+                                        sm: 2,
+                                        md: 3,
+                                        lg: 3,
+                                        xl: 3,
+                                        xxl: 3,
+                                    }}
+                                    dataSource={showProductList.productsInProductionHouse}
+                                    renderItem={(item) => (
+                                        <List.Item>
+                                            <ProductsInProductionHouseCard2 key={item.pid} value={
+                                                {
+                                                    product: item,
+                                                    manufacturerId : manufacturerId,
+                                                    manufacturerName : manufacturerName,
+                                                    manufacturerLogo : manufacturerLogo,
+                                                    phid : phid,
+                                                    productionHouseName : productionHouseName
+                                                }
+                                            }/>
+                                        </List.Item>
+                                    )}
+                                    />
+                                      
+                                </List>
                             }
                             
                             

@@ -1,8 +1,8 @@
-import { Layout, theme, Breadcrumb, Spin } from "antd";
+import { Layout, theme, Breadcrumb, Spin, Input, Space } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, PlusCircleTwoTone} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, PlusCircleTwoTone, SearchOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import InventoryCard from "../../components/common/InventoryCard";
 import CustomFooter from "../../components/CustomFooter";
@@ -35,6 +35,7 @@ function InventoryList(){
 
     //* Set inventory list
     const [inventoryList, setInventoryList] = useState([]);
+    const [showInventoryList, setShowInventoryList] = useState([]);
     const [loading, setLoading] = useState(false); 
 
 
@@ -60,6 +61,7 @@ function InventoryList(){
                 receivedData = await response.json();
                 setLoading(false);
                 setInventoryList(receivedData);
+                setShowInventoryList(receivedData);
                 
             }
             catch(error){
@@ -74,6 +76,16 @@ function InventoryList(){
 
       const goToAddNewInventory = () => {
             navigate("/man/inventoryList/addNewInventory", {state: {manufacturerId: manufacturerId, manufacturerName: manufacturerName, manufacturerLogo: manufacturerLogo}});
+      }
+
+      const handleInventorySearch = (e) => {
+        let searchValue = e.target.value;
+        let inventoryList = showInventoryList.inventories;
+        let filteredInventoryList = inventoryList.filter((inventory) => {
+            return inventory.InventoryName.toLowerCase().includes(searchValue.toLowerCase());
+        });
+
+        setInventoryList({inventories: filteredInventoryList});
       }
 
 
@@ -138,7 +150,7 @@ function InventoryList(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -165,6 +177,27 @@ function InventoryList(){
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Inventory</p>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'left'}}>
+                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'left'}}>
+                                        <Input
+                                            placeholder="Enter inventory name"
+                                            style={{
+                                                display:'flex',
+                                                borderRadius: '8px', // Set the border radius for rounded corners
+                                                border: '2px solid blue', // Set the blue-colored border
+                                                fontFamily:'Kalam',
+                                                width:'50%'
+                                            }}
+                                            prefix={
+                                                <Space>
+                                                  <SearchOutlined style={{ color: 'blue' }} />
+                                                </Space>
+                                            }
+                                            onChange={handleInventorySearch}
+                                        />
+                                    </div>
                             </div>
 
                             {/* //*Loading effect   */  }

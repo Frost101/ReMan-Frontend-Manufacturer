@@ -1,22 +1,24 @@
-import { Layout, theme, Breadcrumb, Spin, List, Space, Input } from "antd";
+import { Layout, theme,InputNumber, Breadcrumb,notification, Spin, Form, Card, Row, Col, Divider, Modal,Input, Avatar, Button } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined,ReconciliationFilled,  CheckCircleTwoTone} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
-import ProductsInInventoryCard from "../../components/Inventory/ProductsInInventoryCard";
-import ProductCard2 from "../../components/Inventory/ProductsCard2";
+import { useNavigate } from "react-router-dom";
 
-function InventoryShowProduct(){
+
+function Profile(){
     const location = useLocation();
+    const navigate = useNavigate();
 
     const manufacturerId = location.state.manufacturerId;
     const manufacturerName = location.state.manufacturerName;
     const manufacturerLogo = location.state.manufacturerLogo;
-    const iid = location.state.iid;
-    const inventoryName = location.state.inventoryName;
+
+
+
     
     //* Menu Collapse
     const [collapsed, setCollapsed] = useState(false);
@@ -35,57 +37,54 @@ function InventoryShowProduct(){
     };
 
 
-    //* Set inventory list
-    const [productList, setProductList] = useState([]);
-    const [showProductList, setShowProductList] = useState([]);
+    
     const [loading, setLoading] = useState(false); 
+    const [profile, setProfile] = useState([]);
 
 
 
-    //* Fetch Inventory List
+   
     let response,receivedData;
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
             let data = {
-                iid : iid
+                manufacturerId: manufacturerId
             }
+            setLoading(true);
             try{
-                response = await fetch(import.meta.env.VITE_API_URL+'/products/byInventory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-                });
-        
+                response = await fetch(import.meta.env.VITE_API_URL+'/manufacturer/info',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                })
                 receivedData = await response.json();
+                console.log(receivedData);
                 setLoading(false);
-                setProductList(receivedData);
-                setShowProductList(receivedData);
-                
+                setProfile(receivedData);
             }
             catch(error){
-                console.log("Error");
+                console.log(error);
+                setLoading(false);
             }
         };
     
         fetchData();
       }, []); 
+  
 
 
-      const handleProductSearch = (e) => {
-        let searchQuery = e.target.value;
-        let filteredProductList = productList.productsInInventory.filter((product) => {
-            
-            return product.ProductName.toLowerCase().includes(searchQuery.toLowerCase());
-        });
-        setShowProductList({productsInInventory:filteredProductList});
-      }
+   
+
+    
+
 
     
     return (
         <div>
+
             <Layout>
 
                
@@ -134,8 +133,7 @@ function InventoryShowProduct(){
                                 >
                                     <Breadcrumb.Item><HomeOutlined style={{color:'Black', fontSize:'20px'}}/></Breadcrumb.Item>
                                     <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Manufacturer</p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'black', fontSize:'20px'}}>Inventory </p></Breadcrumb.Item>
-                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Product</p></Breadcrumb.Item>
+                                    <Breadcrumb.Item><p style={{fontFamily:'Kalam', color:'Highlight', fontSize:'20px'}}>Profile </p></Breadcrumb.Item>
                                 </Breadcrumb>
                             </div>
                             <div style={{flex:'1',
@@ -165,30 +163,19 @@ function InventoryShowProduct(){
                             overflow : 'initial'
                             }}
                         >
-                             <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam'}}> Products in {inventoryName} :</p>
+                            
+                            
 
-                             <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'left'}}>
-                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'left'}}>
-                                        <Input
-                                            placeholder="Enter product name"
-                                            style={{
-                                                display:'flex',
-                                                borderRadius: '8px', // Set the border radius for rounded corners
-                                                border: '2px solid blue', // Set the blue-colored border
-                                                fontFamily:'Kalam',
-                                                width:'50%'
-                                            }}
-                                            prefix={
-                                                <Space>
-                                                  <SearchOutlined style={{ color: 'blue' }} />
-                                                </Space>
-                                            }
-                                            onChange={handleProductSearch}
-                                        />
-                                    </div>
+                            <div style={{display:'flex', justifyContent:'center'}}>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}> My Profile:</p>
+                                <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
+                                    
+                                    
+
+                                </div>
                             </div>
 
-                            {/* //*Loading effect while fetching or filtering batches */  }
+                            {/* //*Loading effect while  */  }
                             {
                                 loading &&
                                 <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}}>
@@ -197,43 +184,46 @@ function InventoryShowProduct(){
                                 </div>
                             }
 
+                            { profile != undefined && profile.length != 0 && (
+                            <Card 
+                            hoverable
+                            >
+                                <Row gutter={16}>
+                                    <Col span={6}>
 
-                            {                           
-                                (showProductList != undefined && showProductList.length != 0) &&
-                                <List>
+                                    <img src={profile.Image}
+                                    alt="example"
+                                     style={{ width: '100%', height: 'auto' }}
+                                      />
+
+                                    </Col>
+                                    <Col span={18}>
 
 
-                                <List
-                                    grid={{
-                                        gutter: 16,
-                                        xs: 1,
-                                        sm: 2,
-                                        md: 3,
-                                        lg: 3,
-                                        xl: 3,
-                                        xxl: 3,
-                                    }}
-                                    dataSource={showProductList.productsInInventory}
-                                    renderItem={(item) => (
-                                        <List.Item>
-                                            <ProductCard2 key={item.pid} value={
-                                                {
-                                                    product: item,
-                                                    manufacturerId : manufacturerId,
-                                                    manufacturerName : manufacturerName,
-                                                    manufacturerLogo : manufacturerLogo,
-                                                    iid : iid,
-                                                    inventoryName : inventoryName
-                                                }
-                                            }/>
-                                        </List.Item>
-                                    )}
-                                    />
-                                      
-                                </List>
-                            }
-                            
-                            
+                                    <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                        Details
+                                    </Divider>
+                                    
+                                    <div
+                                        style={{fontFamily:'Kalam', fontSize:'20px', color:'#001529', textAlign:'left'}}
+                                    >
+                                        <p><strong style={{color:'blue'}}>Name:</strong> {profile.Name}</p>
+                                        <p><strong style={{color:'blue'}}>Tin:</strong> {profile.tin}</p>
+                                        <p><strong style={{color:'blue'}}>Email:</strong> {profile.Email} </p>
+                                        <p><strong style={{color:'blue'}}>Phone number:</strong> {profile.PhoneNumber} </p>
+                                        <p><strong style={{color:'blue'}}>Website:</strong> {profile.Website} </p>
+                                        <p><strong style={{color:'blue'}}>Rating:</strong> {profile.Rating} </p>
+                                        <p><strong style={{color:'blue'}}>Address:</strong> {profile.Address} </p>
+                                        
+                                        <br></br>
+                                    </div>
+
+                                    
+                                    </Col>
+                                </Row>
+                                </Card>
+                            )}
+
                         </Content>
                     </Layout>
                 </Layout>
@@ -246,4 +236,4 @@ function InventoryShowProduct(){
     )
 }
 
-export default InventoryShowProduct;
+export default Profile;

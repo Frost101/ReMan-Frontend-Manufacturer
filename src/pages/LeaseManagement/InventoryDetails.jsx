@@ -258,7 +258,7 @@ function InventoryDetails(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -307,7 +307,7 @@ function InventoryDetails(){
                                 <Row gutter={16}>
                                     <Col span={6}>
 
-                                    <img src="https://firebasestorage.googleapis.com/v0/b/reman-manufacturer.appspot.com/o/Misc%2FInventory.svg?alt=media&token=feb2323b-81a9-49c3-9096-f53351c1f6b6" 
+                                    <img src={inventory.Image} 
                                     alt={inventory.InventoryName}
                                      style={{ width: '100%', height: 'auto' }}
                                       />

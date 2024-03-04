@@ -158,7 +158,7 @@ function ProductList(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -179,9 +179,9 @@ function ProductList(){
                         >
                             <div style={{display:'flex', justifyContent:'center'}}>
                                 <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}>Categories and Products:</p>
-                                <div style={{flex:'1', display:'flex', justifyContent:'center', justifySelf:'right'}}>
+                                <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
 
-                                    <div onClick={addProduct} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'5px' }}>
+                                    <div onClick={addProduct} style={{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign:'center',paddingLeft:'5px' }}>
                                         <PlusCircleFilled style={{ fontSize: '50px', color: '#08c', marginLeft: '30px' }} />
                                         <p style={{ fontFamily: 'Kalam', alignSelf: 'center',  marginLeft: '30px' }}>Add New Product</p>
                                     </div>

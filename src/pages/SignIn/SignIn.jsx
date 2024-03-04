@@ -4,9 +4,25 @@ import LoginForm from '../../components/SignIn/LoginForm';
 import LoginCarousel from '../../components/SignIn/LogInCarousel';
 
 function App() {
+  // return (
+  //   <div className="page-container">
+  //     <div className="center-box">
+  //       <div className="left-section" >
+  //         <div>
+  //             <image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt="logo" />
+  //         </div>
+            
+  //       </div>
+  //       <div className="right-section">
+  //           <LoginForm />
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
+
   return (
     <div className="page-container">
-      <div className="center-box">
+      <div style={{display:'flex', alignContent:'center', margin:'5%', width:'70%'}}>
         <div className="left-section" >
           <div>
               <image src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt="logo" />
