@@ -66,9 +66,9 @@ function Success1(){
 
 
     const goToLeaseManagementPage = () => {
-        navigate("/man/leaseManagement", {state:{manufacturerId: props.value.manufacturerId,
-                                                    manufacturerName: props.value.manufacturerName,
-                                                    manufacturerLogo: props.value.manufacturerLogo}});
+        navigate("/man/leaseManagement", {state:{manufacturerId: manufacturerId,
+                                                    manufacturerName: manufacturerName,
+                                                    manufacturerLogo: manufacturerLogo}});
     }
 
     
