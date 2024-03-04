@@ -84,8 +84,8 @@ function InventoryDetails(){
         let response,receivedData;
         try {
             setLoading(true);
-            response = await fetch(import.meta.env.VITE_API_URL+'/leaseInventory/takeLease', {
-                method: 'PUT',
+            response = await fetch(import.meta.env.VITE_API_URL+'/payment/paymentOnlineForTakingLease', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -93,23 +93,10 @@ function InventoryDetails(){
             });
             receivedData = await response.json();
             setLoading(false);
-            if (response.status === 200) {
-               
-                notification.success({
-                    message: 'Lease Successful',
-                    duration: 1,
-                    onClose: () => {
-                        navigate(-1);
-                    },
-                });
-            }
-            else {
-              
-                notification.error({
-                    message: 'Lease Unsuccessful',
-                    duration: 1,
-                });
-            }
+            localStorage.setItem('manufacturerId', manufacturerId);
+            localStorage.setItem('manufacturerLogo', manufacturerLogo);
+            localStorage.setItem('manufacturerName',manufacturerName);
+            window.location.href(receivedData.url);
         } catch (err) {
             console.log(err);
         }

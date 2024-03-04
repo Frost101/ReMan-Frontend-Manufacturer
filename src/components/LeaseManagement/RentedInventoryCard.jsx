@@ -67,31 +67,18 @@ const RentedInventoryCard = (props) => {
             OccupiedTill: values.OccupiedTill,
         }
         try{
-            let response = await fetch(import.meta.env.VITE_API_URL+'/leaseInventory/extendLease', {
-                method: 'PUT',
+            let response = await fetch(import.meta.env.VITE_API_URL+'/payment/paymentOnlineForExtendingLease', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             });
             let receivedData = await response.json();
-            if(response.status === 200){
-                notification.success({
-                    message: 'Success',
-                    description: 'Lease extended successfully',
-                    duration: 2,
-                    onClose: () => {
-                        navigate(-1);
-                    }
-                });
-                setModalVisible(false);
-            }
-            else{
-                notification.error({
-                    message: 'Error',
-                    description: 'Failed to extend lease',
-                });
-            }
+            localStorage.setItem('manufacturerId', manufacturerId);
+            localStorage.setItem('manufacturerLogo',manufacturerLogo);
+            localStorage.setItem('manufacturerName',manufacturerName);
+            window.location.href(receivedData.url);
         }
         catch(error){
             console.log("Error");
