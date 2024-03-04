@@ -43,6 +43,9 @@ function DataAnalytics(){
     
     const [loading, setLoading] = useState(false); 
     const [profile, setProfile] = useState([]);
+    const [rating, setRating] = useState([]);
+    const [revenue, setRevenue] = useState([]);
+    const [quantity, setQuantity] = useState([]);
 
 
 
@@ -67,6 +70,85 @@ function DataAnalytics(){
                 console.log(receivedData);
                 setLoading(false);
                 setProfile(receivedData);
+            }
+            catch(error){
+                console.log(error);
+                setLoading(false);
+            }
+
+
+
+
+            data = {
+                manufacturerId: manufacturerId
+            }
+            setLoading(true);
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/ProductRatingbyManufacturer',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                })
+                receivedData = await response.json();
+                console.log("Rating");
+                console.log(receivedData);
+                setLoading(false);
+                setRating(receivedData.data);
+            }
+            catch(error){
+                console.log(error);
+                setLoading(false);
+            }
+
+
+
+
+
+            data = {
+                manufacturerId: manufacturerId
+            }
+            setLoading(true);
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/ProductsOrderedbyManufacturer',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                })
+                receivedData = await response.json();
+                console.log(receivedData);
+                setLoading(false);
+                setQuantity(receivedData.data);
+            }
+            catch(error){
+                console.log(error);
+                setLoading(false);
+            }
+
+
+
+            data = {
+                manufacturerId: manufacturerId
+            }
+            setLoading(true);
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/ProductsRevenuebyManufacturer',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                })
+                receivedData = await response.json();
+                console.log(receivedData);
+                setLoading(false);
+                setRevenue(receivedData.data);
             }
             catch(error){
                 console.log(error);
@@ -186,21 +268,42 @@ function DataAnalytics(){
                             <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
                                     Product Rating
                             </Divider>
-
-                            <ProductRating />
+                            
+                            {
+                                rating.length != 0 &&
+                                
+                                    <ProductRating value={rating}/>
+                                
+                            }
+                            
 
 
                             <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
                                     Total Revenue
                             </Divider>
 
-                            <TotalRevenue />
+                            {
+                                revenue.length != 0 &&
+                                
+                                    <TotalRevenue value={revenue}/>
+                                
+                            }
+
+                            
 
                             <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
-                                    Total Quantity
+                                    Total Sold Quantity
                             </Divider>
 
-                            <TotalQuantity />
+                            {
+                                quantity.length != 0 &&
+                                
+                                    <TotalQuantity value={quantity}/>
+                                
+                            
+                            }
+
+                            
 
                         </Content>
                     </Layout>

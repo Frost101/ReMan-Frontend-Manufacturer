@@ -39,6 +39,8 @@ import ReclaimInventories from './pages/LeaseManagement/ReclaimInventories'
 import UnreadNotification from './pages/Notification/UnreadNotification'
 import Profile from './pages/Profile/Profile'
 import DataAnalytics from './pages/DataAnalytics/DataAnalytics'
+import Success1 from './pages/LeaseManagement/Success1'
+import Failed1 from './pages/LeaseManagement/Failed1'
 
 function App() {
 
@@ -95,6 +97,8 @@ function App() {
             <Route path="man/leaseManagement/takenInventories" element={<TakenInventories />} />
             <Route path="man/leaseManagement/reclaimInventories" element={<ReclaimInventories />} />
             <Route path="man/leaseManagement/inventoryMarketPlace/inventoryDetails" element={<InventoryDetails />} />
+            <Route path="man/leaseManagement/inventoryMarketPlace/inventoryDetails/success1" element={<Success1 />} />
+            <Route path="man/leaseManagement/inventoryMarketPlace/inventoryDetails/failed1" element={<Failed1 />} />
 
             <Route path="man/myVouchers" element={<MyVouchers />} />
             <Route path="man/myVouchers/addNew" element={<AddNewVoucher />} />
