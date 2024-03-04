@@ -15,9 +15,9 @@ function Failed1(){
     const navigate = useNavigate();
 
     
-    const manufacturerId = "dsdsdsds"
-    const manufacturerName = "sdsdsds"
-    const manufacturerLogo = "sdsdsdsd"
+    const manufacturerId = localStorage.getItem('manufacturerId');
+    const manufacturerName = localStorage.getItem('manufacturerName');
+    const manufacturerLogo = localStorage.getItem('manufacturerLogo');
 
 
 
@@ -64,7 +64,11 @@ function Failed1(){
         setModalVisible(false);
     };
 
-
+    const goToLeaseManagementPage = () => {
+        navigate("/man/leaseManagement", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
     
 
     
@@ -164,7 +168,7 @@ function Failed1(){
                             status="warning"
                             title="There are some problems with your transaction."
                             extra={
-                            <Button type="primary" key="console">
+                            <Button onClick={goToLeaseManagementPage} type="primary" key="console">
                                 Go Back to Lease Management
                             </Button>
                             }
