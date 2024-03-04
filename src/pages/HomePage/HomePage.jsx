@@ -17,6 +17,18 @@ function HomePage(){
     const [manInfo, setManInfo] = useState({manInfo:[]});
     const [inventoryList, setInventoryList] = useState([]);
     const [productionHouseList, setProductionHouseList] = useState([]);
+    const [countInfo, setCountInfo] = useState(
+        {
+            "InventoryCount": 0,
+            "ProductionHouseCount": 0,
+            "DistinctProductCount": 0,
+            "BatchCount": 0,
+            "CategoryCount": 0,
+            "TotalProductCount": 0,
+            "TotalOrderCount": 0,
+            "TodayIncome": 0
+          }
+    );
     const {
         token: { colorBgContainer, borderRadiusLG},
     } = theme.useToken();
@@ -89,6 +101,27 @@ function HomePage(){
             catch(error){
                 console.log("Error");
             }
+
+
+
+            data = {
+                manufacturerId: manufacturerId
+            }
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/manufacturer/countInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+                });
+        
+                receivedData = await response.json();
+                setCountInfo(receivedData);
+            }
+            catch(error){
+                console.log("Error");
+            }
         };
     
         fetchData();
@@ -142,7 +175,7 @@ function HomePage(){
                 
                 <MenuList  value={{manufacturerId:manufacturerId,
                                     manufacturerName: manInfo.Name,
-                                    manufacturerLogo: "logo.jpg"}}/>
+                                    manufacturerLogo: manInfo.Image}}/>
                 </Sider>
                 <Layout style={{marginLeft, minHeight:'100vh'}}>
                     <MenuCollapse  sendDataToParent={handleMenuCollapse}/>
@@ -182,7 +215,7 @@ function HomePage(){
                                 <div className="logo" style={{ textAlign: 'center', margin:'1%' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10%' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'70px', height:'70px', borderRadius:'50%'}}/>
+                                            <img src = {manInfo.Image} style={{width:'70px', height:'70px', borderRadius:'50%'}}/>
                                         </div>
                                 </div>
                             </div>
@@ -282,7 +315,7 @@ function HomePage(){
                                     <Statistic title={<p style={{fontFamily:'Lobster',color:'#001515',textAlign:'center', fontSize:'25px'}}>Total Products</p>}
                                     prefix={<DropboxOutlined />}
                                     valueStyle={{fontFamily:'Lobster', color: 'blue', fontSize:'25px', textAlign:'center'}}
-                                    value={7}
+                                    value={countInfo.DistinctProductCount}
                                     formatter={formatter} />
                                     </Card>
                                 </Col>
@@ -299,11 +332,11 @@ function HomePage(){
                                             height:'auto',
                                         }}
                                     >
-                                    <Statistic title={<p style={{fontFamily:'Lobster',color:'#001515',textAlign:'center', fontSize:'25px'}}>Orders Completed</p>}
+                                    <Statistic title={<p style={{fontFamily:'Lobster',color:'#001515',textAlign:'center', fontSize:'25px'}}>Orders Count</p>}
                                     prefix={<HourglassTwoTone />}
                                     suffix={<ArrowUpOutlined />}
                                     valueStyle={{fontFamily:'Lobster', color: '#3f8600', fontSize:'25px', textAlign:'center'}}
-                                    value={70000}
+                                    value={countInfo.TotalOrderCount}
                                     formatter={formatter} />
                                     </Card>
                                 </Col>
@@ -324,7 +357,7 @@ function HomePage(){
                                     suffix={<ArrowUpOutlined />}
                                     prefix={<DollarTwoTone />}
                                     valueStyle={{fontFamily:'Lobster', color: '#3f8600', fontSize:'25px', textAlign:'center'}}
-                                    value={7000}
+                                    value={countInfo.TodayIncome}
                                     formatter={formatter} />
                                     </Card>
                                 </Col>

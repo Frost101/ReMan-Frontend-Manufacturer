@@ -105,6 +105,20 @@ const MenuList = (props) => {
     }
 
 
+    const goToProfilePage = () => {
+        navigate("/man/profile", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+
+    }
+
+    const goToDataAnalyticsPage = () => {
+        navigate("/man/dataAnalytics", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
+
+
     const signout = () => {
         navigate("/");
     }
@@ -115,7 +129,7 @@ const MenuList = (props) => {
             <Menu.Item key="home" icon={<HomeOutlined />} onClick={goToHomePage} className="menu-item">
                 Home
             </Menu.Item>
-            <Menu.Item key="Profile" icon={<ProfileOutlined />} className="menu-item">
+            <Menu.Item onClick={goToProfilePage} key="Profile" icon={<ProfileOutlined />} className="menu-item">
                 Profile
             </Menu.Item>
             <Menu.Item key="notification" icon={<NotificationOutlined />} onClick={goToUnreadNotificationPage} className="menu-item">
@@ -142,7 +156,7 @@ const MenuList = (props) => {
             <Menu.Item key="leaseManagement" icon={<CreditCardOutlined />} onClick={goToVoucherPage} className="menu-item">
                 Voucher
             </Menu.Item>
-            <Menu.Item key="data" icon={<AreaChartOutlined />} className="menu-item">
+            <Menu.Item onClick={goToDataAnalyticsPage} key="data" icon={<AreaChartOutlined />} className="menu-item">
                 Data Analytics
             </Menu.Item>
             <Menu.Item key="signout" icon={<PoweroffOutlined color='red' /> } className="menu-item" onClick={signout}>

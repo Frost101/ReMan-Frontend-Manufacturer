@@ -1,8 +1,8 @@
-import { Layout, theme, Breadcrumb, Spin } from "antd";
+import { Layout, theme, Breadcrumb, Spin, Input, Space } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
-import { CodeSandboxCircleFilled, HomeOutlined, PlusCircleTwoTone} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, PlusCircleTwoTone, SearchOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import ProductionHouseCard from "../../components/common/ProductionHouseCard";
 import CustomFooter from "../../components/CustomFooter";
@@ -36,6 +36,7 @@ function ProductionHouseList(){
 
     //* Set inventory list
     const [productionHouseList, setProductionHouseList] = useState([]);
+    const [showProductionHouseList, setShowProductionHouseList] = useState([]);
     const [loading, setLoading] = useState(false); 
 
 
@@ -61,6 +62,7 @@ function ProductionHouseList(){
                 receivedData = await response.json();
                 setLoading(false);
                 setProductionHouseList(receivedData);
+                setShowProductionHouseList(receivedData);
             }
             catch(error){
                 console.log("Error");
@@ -73,6 +75,14 @@ function ProductionHouseList(){
 
       const goToAddNewProdHouse = () => {
         navigate("/man/productionHouseList/addNewProductionHouse", {state: {manufacturerId: manufacturerId, manufacturerName: manufacturerName, manufacturerLogo: manufacturerLogo}});
+      }
+
+      const handleProductionHouseSearch = (e) => {
+        let searchQuery = e.target.value;
+        let filteredProductionHouse = productionHouseList.productionHouses.filter((productionHouse) => {
+            return productionHouse.ProductionHouseName.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+        setShowProductionHouseList({productionHouses: filteredProductionHouse});
       }
 
       
@@ -135,7 +145,7 @@ function ProductionHouseList(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -164,6 +174,27 @@ function ProductionHouseList(){
                                 </div>
                             </div>
 
+                            <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'left'}}>
+                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'left'}}>
+                                        <Input
+                                            placeholder="Enter production house name"
+                                            style={{
+                                                display:'flex',
+                                                borderRadius: '8px', // Set the border radius for rounded corners
+                                                border: '2px solid blue', // Set the blue-colored border
+                                                fontFamily:'Kalam',
+                                                width:'50%'
+                                            }}
+                                            prefix={
+                                                <Space>
+                                                  <SearchOutlined style={{ color: 'blue' }} />
+                                                </Space>
+                                            }
+                                            onChange={handleProductionHouseSearch}
+                                        />
+                                    </div>
+                            </div>
+
 
                             {/* //*Loading effect   */  }
                             {
@@ -175,7 +206,7 @@ function ProductionHouseList(){
                             }
                             
                             {
-                                productionHouseList.length !=0 && productionHouseList.productionHouses.map((productionHouse, index) => {
+                                showProductionHouseList.length !=0 && showProductionHouseList.productionHouses.map((productionHouse, index) => {
                                     return <ProductionHouseCard key = {index} value={
                                         {
                                             manufacturerName: manufacturerName,

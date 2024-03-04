@@ -1,11 +1,11 @@
-import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar, Spin } from "antd";
+import { Layout, theme, Breadcrumb,  Card, Collapse, Avatar, Spin, Input, Space } from "antd";
 import MenuList from "../../components/common/MenuList";
 import ProductsInOrderCard from "../../components/Order/ProductsInOrderCard";
 const {Content, Sider} = Layout;
 const { Panel } = Collapse;
 import { useState, useEffect, } from "react";
 import { useNavigate } from "react-router-dom";
-import { CodeSandboxCircleFilled, HomeOutlined, CaretRightOutlined, PlusCircleFilled, MinusCircleFilled, CheckCircleFilled} from "@ant-design/icons";
+import { CodeSandboxCircleFilled, HomeOutlined, CaretRightOutlined, SearchOutlined} from "@ant-design/icons";
 import MenuCollapse from "../../components/common/MenuCollapse";
 import CustomFooter from "../../components/CustomFooter";
 import {useLocation} from 'react-router-dom';
@@ -93,7 +93,13 @@ function OrderManagement(){
       }, []); 
 
 
-
+      const handleShopSearch = (e) => {
+        let searchQuery = e.target.value;
+        let filteredOrderList = orderList.orders.filter((order) => {
+            return order.ShopName.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+        setShowOrderList({orders: filteredOrderList});
+      }
 
 
 
@@ -158,7 +164,7 @@ function OrderManagement(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -185,6 +191,29 @@ function OrderManagement(){
                                     
                                    
                                 </div>
+                            </div>
+
+
+
+                            <div style={{flex:'3', display:'flex', justifyContent:'right', justifySelf:'left'}}>
+                                    <div style={{flex:'1', justifyContent:'center', justifySelf:'left'}}>
+                                        <Input
+                                            placeholder="Enter shop name"
+                                            style={{
+                                                display:'flex',
+                                                borderRadius: '8px', // Set the border radius for rounded corners
+                                                border: '2px solid blue', // Set the blue-colored border
+                                                fontFamily:'Kalam',
+                                                width:'50%'
+                                            }}
+                                            prefix={
+                                                <Space>
+                                                  <SearchOutlined style={{ color: 'blue' }} />
+                                                </Space>
+                                            }
+                                            onChange={handleShopSearch}
+                                        />
+                                    </div>
                             </div>
 
 

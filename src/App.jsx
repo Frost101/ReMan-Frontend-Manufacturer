@@ -37,6 +37,8 @@ import RentedInventories from './pages/LeaseManagement/RentedInventories'
 import TakenInventories from './pages/LeaseManagement/TakenInventories'
 import ReclaimInventories from './pages/LeaseManagement/ReclaimInventories'
 import UnreadNotification from './pages/Notification/UnreadNotification'
+import Profile from './pages/Profile/Profile'
+import DataAnalytics from './pages/DataAnalytics/DataAnalytics'
 
 function App() {
 
@@ -52,6 +54,10 @@ function App() {
 
 
             <Route path="/man/home" element={<HomePage />} />
+
+            <Route path ="man/profile" element={<Profile />} />
+
+            <Route path="man/dataAnalytics" element={<DataAnalytics />} />
 
 
             <Route path="man/inventoryList" element={<InventoryList />} />

@@ -69,7 +69,7 @@ const InventoryCard = (props) => {
             <div style={{flex:'1',display:'flex', fontFamily:'Kalam', fontSize:'15px', alignItems:'center',}}>
                 Owner Status:  
                 {
-                        inventory.EmptyStatus ? 
+                        inventory.RealOwner == manufacturerId ? 
                         (
                         <> 
                             Owned
@@ -99,7 +99,7 @@ const InventoryCard = (props) => {
             </div>
             <div style={{flex:'1',display:'flex', fontFamily:'Kalam', fontSize:'15px', alignItems:'center'}}> Empty: 
                     {
-                        inventory.OwnerStatus ? 
+                        inventory.EmptyStatus ? 
                         (
                         <> 
                             Yes

@@ -1,4 +1,4 @@
-import { Layout, theme, Breadcrumb, Spin } from "antd";
+import { Layout, theme, Breadcrumb, Spin, Card, Row, Col, Divider, Rate  } from "antd";
 import MenuList from "../../components/common/MenuList";
 const {Content, Sider} = Layout;
 import { useState, useEffect} from "react";
@@ -39,14 +39,36 @@ function ProductDetails(){
 
     
     const [loading, setLoading] = useState(false); 
-
+    const [productDetails, setProductDetails] = useState([]);
 
 
    
     let response,receivedData;
     useEffect(() => {
+        let response,receivedData;
         const fetchData = async () => {
-            
+            let data = {
+                pid: pid,
+            }
+            setLoading(true);
+            try{
+                response = await fetch(import.meta.env.VITE_API_URL+'/products/productDetails',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                })
+                receivedData = await response.json();
+                console.log(receivedData);
+                setLoading(false);
+                setProductDetails(receivedData.productInfo);
+            }
+            catch(error){
+                console.log(error);
+                setLoading(false);
+            }
         };
     
         fetchData();
@@ -136,7 +158,7 @@ function ProductDetails(){
                                     <div className="logo" style={{ textAlign: 'center' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center',marginBottom:'10px', padding:'10px' }}>
                                             {/* <CodeSandboxCircleFilled style={{ fontSize: '45px', color: '#08c', display:'flex', alignItems:'center', justifyContent:'center' }} /> */}
-                                            <img src = "https://live.staticflickr.com/8228/8511339367_1b3d4612ae.jpg" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                                            <img src = {manufacturerLogo} style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
                                         </div>
                                     </div>
                                     <p style={{fontFamily:'Kalam', fontSize:"50px",color:'#001529'}}>{manufacturerName}</p>
@@ -158,17 +180,13 @@ function ProductDetails(){
                             
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
                                 <p style={{ color: '#001529', fontSize: '50px', fontFamily: 'Kalam', textAlign: 'center' }}>
-                                    <img
-                                    src="https://pngimg.com/d/gift_PNG100238.png"
-                                    alt="Avatar"
-                                    style={{ marginRight: '10px', width: '50px', height: '50px' }}
-                                    />
+                                    
                                     {productName}
                                 </p>
                             </div>
 
                             <div style={{display:'flex', justifyContent:'center'}}>
-                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}> Product:</p>
+                                <p style={{color:'#001529',fontSize:'50px',fontFamily:'Kalam',flex:'1'}}> </p>
                                 <div style={{flex:'1', display:'flex', justifyContent:'right', justifySelf:'right'}}>
                                     
                                     <div onClick={goToUpdateProductInfo} style={{cursor:'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',paddingLeft:'10px' }}>
@@ -187,6 +205,91 @@ function ProductDetails(){
                                     </Spin>
                                 </div>
                             }
+
+                            
+                            { productDetails.length != 0 && productDetails != undefined && (
+                            <Card 
+                            hoverable
+                            >
+                                <Row gutter={16}>
+                                    <Col span={6}>
+
+                                    <img src={productDetails.Image}
+                                    alt="example"
+                                     style={{ width: '80%', height: 'auto' }}
+                                      />
+
+                                    {
+                                        productDetails.OtherImages.map((image, index) => {
+                                            return (
+                                                <img src={image}
+                                                alt="example"
+                                                key={index}
+                                                 style={{ width: '40%', height: 'auto', marginTop:'10px' }}
+                                                  />
+                                            )
+                                        }
+                                        )
+                                    }
+
+                                    </Col>
+                                    <Col span={18}>
+
+
+                                    <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                        Product Name & Details 
+                                    </Divider>
+                                    
+                                    <div
+                                        style={{fontFamily:'Kalam', fontSize:'20px', color:'#001529', textAlign:'left'}}
+                                    >
+                                        <p><strong style={{color:'blue'}}>Product Name:</strong> {productDetails.ProductName}</p>
+                                        <p><strong style={{color:'blue'}}>Category Name:</strong> {productDetails.CategoryName} </p>
+                                        <p><strong style={{color:'blue'}}>Description:</strong> {productDetails.Description} </p>
+                                        <p><strong style={{color:'blue'}}>Rating:</strong> {productDetails.Rating} <Rate allowHalf value={productDetails.Rating} /></p>
+                                        
+                                        <br></br>
+                                    </div>
+
+                                    <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                        Owner Info & Quantity
+                                    </Divider>
+
+                                    <div 
+                                        style={{fontFamily:'Kalam', fontSize:'20px', color:'#001529', textAlign:'left'}}
+                                    >
+                                        <p><strong style={{color:'blue'}}>Manufacturer Name:</strong> {productDetails.ManufacturerName}</p>
+                                        <p><strong style={{color:'blue'}}>Total Quantity:</strong> {productDetails.TotalQuantity}</p>
+                                        
+                                        <br></br>
+                                    </div>
+                                    
+                                    <Divider orientation="left" style={{ color: 'purple', borderColor: 'purple', borderWidth: '5px', fontFamily:'Kalam' }}>
+                                        Price Details & Adjustment
+                                    </Divider>
+
+                                    <div
+                                        style={{fontFamily:'Kalam', fontSize:'20px', color:'#001529', textAlign:'left'}}
+                                    >
+                                        <p><strong style={{color:'blue'}}>Wweight/Volume : </strong>{productDetails.Weight_volume} {productDetails.Unit} </p>
+                                        <p><strong style={{color:'blue'}}>Unit Price: </strong>{productDetails.UnitPrice} taka</p>
+                                        <p><strong style={{color:'blue'}}>Minimum Quantity For Sale:</strong>  {productDetails.MinQuantityForSale}</p>
+                                        <p><strong style={{color:'blue'}}>Minimum Quantity For Discount:</strong>  {productDetails.MinQuantityForDiscount}</p>
+                                        <p><strong style={{color:'blue'}}>Minimum Discount:</strong>  {productDetails.MinimumDiscount} %</p>
+                                        <p><strong style={{color:'blue'}}>Maximum Discount:</strong>  {productDetails.MaximumDiscount} %</p>
+                                        <p><strong style={{color:'blue'}}>Discount Increment:</strong>  {productDetails.DiscountRate} %</p>
+                                        <p><strong style={{color:'blue'}}>Product Quantity For Discount Rate:</strong>  {productDetails.ProductQuantityForDiscountRate} </p>
+                                        <p><strong style={{color:'blue'}}>Minimum Delivery Charge:</strong>  {productDetails.MinimumDeliveryCharge} taka</p>
+                                        <p><strong style={{color:'blue'}}>Delivery Charge Increment:</strong>  {productDetails.DeliveryChargeIncreaseRate} taka</p>
+                                        <br></br>
+                                    </div>
+                                    
+                                    
+                                    </Col>
+                                </Row>
+                                </Card>
+                            )}
+
 
                         </Content>
                     </Layout>

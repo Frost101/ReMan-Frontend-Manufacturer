@@ -51,9 +51,9 @@ const InventoryMarketplaceCard = (props) => {
             height:'auto',
         }}
     >
-        <img src="https://firebasestorage.googleapis.com/v0/b/reman-manufacturer.appspot.com/o/Misc%2FInventory.svg?alt=media&token=feb2323b-81a9-49c3-9096-f53351c1f6b6" 
+        <img src={inventory.Image} 
         
-        alt="bal" style={{ maxWidth: '70%', textAlign:'center',maxHeight:'70%', height: 'auto' }} />
+        alt="inventory" style={{ maxWidth: '70%', textAlign:'center',maxHeight:'70%', height: 'auto' }} />
         <Card.Meta
               title={<h3 style={{ fontSize:'20px',fontFamily: 'Kalam', color: '#333' }}> {inventory.InventoryName} <br></br> Manufacturer: {inventory.OwnerName}</h3>}
               description={
