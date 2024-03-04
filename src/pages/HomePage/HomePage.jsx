@@ -248,7 +248,7 @@ function HomePage(){
                                         style={{ width: '100%' }}
                                         cover={<img alt="example" src="https://firebasestorage.googleapis.com/v0/b/reman-manufacturer.appspot.com/o/Misc%2Fproducts.svg?alt=media&token=cb65e1b8-6dd4-476d-bf6b-a12007ec4458" />}
                                     >
-                                        <Meta title=" View your products " style={{fontFamily:'Kalam'}} description={<Button type="primary" onClick={goToProductionHousePage} style={{fontFamily:'Lobster'}}> Products</Button>} />
+                                        <Meta title=" View your products " style={{fontFamily:'Kalam'}} description={<Button type="primary" onClick={goToProductListPage} style={{fontFamily:'Lobster'}}> Products</Button>} />
                                     </Card>
 
                                 </Col>
