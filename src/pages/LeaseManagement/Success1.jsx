@@ -65,7 +65,11 @@ function Success1(){
     };
 
 
-    
+    const goToLeaseManagementPage = () => {
+        navigate("/man/leaseManagement", {state:{manufacturerId: props.value.manufacturerId,
+                                                    manufacturerName: props.value.manufacturerName,
+                                                    manufacturerLogo: props.value.manufacturerLogo}});
+    }
 
     
 
@@ -164,7 +168,7 @@ function Success1(){
                                 status="success"
                                 title="Operation Successfull!"
                                 extra={[
-                                <Button type="primary" key="console">
+                                <Button type="primary" onClick={goToLeaseManagementPage} key="console">
                                     Back to Lease Management
                                 </Button>,
                                 
